@@ -242,4 +242,3 @@ module.exports.updateManyUsers = function (req, res) {
         }
     });
 };
-

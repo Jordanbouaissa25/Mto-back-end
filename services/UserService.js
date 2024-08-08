@@ -110,24 +110,23 @@ module.exports.addManyUsers = async function (users, options, callback) {
   }
 };
 
-module.exports.logInUser = async function (email, password, options, callback) {
-  module.exports.findOneUser(['email', 'password'], email, null, async (err, value) => {
-    if (err) {
+module.exports.loginUser = async function (email, password, options, callback) {
+  module.exports.findOneUser(["email"], email, null, async (err, value) => {
+    if (err)
       callback(err)
-    } else {
+    else {
       if (bcrypt.compareSync(password, value.password)) {
         var token = TokenUtils.createToken({ _id: value._id }, null)
-        module.exports.updateOneUser(value._id, { token: token }, null, (err, val) => {
+        module.exports.updateOneUser(value._id, { token: token }, null, (err, value) => {
           callback(null, { ...value, token: token })
         })
       }
       else {
-        callback({ msg: "La comparaison des mots de passe sont fausse.", type_error: "no-comparaison" })
+        callback({ msg: "La comparaison des mots de passe est fausse.", type_error: "no-comparaison" })
       }
     }
   })
 }
-
 module.exports.findOneUserById = function (user_id, options, callback) {
   if (user_id && mongoose.isValidObjectId(user_id)) {
     User.findById(user_id).then((value) => {
@@ -150,7 +149,7 @@ module.exports.findOneUserById = function (user_id, options, callback) {
 }
 
 module.exports.findOneUser = function (tab_field, value, options, callback) {
-  var field_unique = ["username", "email"]
+  var field_unique = ["email"]
   if (tab_field && Array.isArray(tab_field) && value
     && _.filter(tab_field, (e) => {
       return field_unique.indexOf(e) == -1
@@ -226,7 +225,7 @@ module.exports.findManyUsers = function (search, page, limit, options, callback)
     callback({ msg: `format de ${typeof page !== "number" ? "page" : "limit"} est incorrect`, type_error: "no-valid" })
   } else {
     var query_mongo = search ? {
-      $or: _.map(["firstName", "lastName", "username", "phone", "email"], (e) => {
+      $or: _.map(["firstName", "lastName", "email"], (e) => {
         return { [e]: { $regex: search } }
       })
     } : {}

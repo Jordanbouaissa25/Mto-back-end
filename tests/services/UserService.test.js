@@ -53,7 +53,6 @@ describe("addManyUsers", () => {
                 lastName: "Dupont",
                 email: "edouard.dupont@gmail.com",
                 testing: true,
-                phone: "0645102340",
                 password: "iojazpqjdozqk"
             },
             {
@@ -61,7 +60,6 @@ describe("addManyUsers", () => {
                 lastName: "Dupont",
                 email: "edouard.dupont@gmail.com",
                 testing: true,
-                phone: "0645102340",
                 password: "oajdsziozqp"
             },
             {
@@ -88,7 +86,6 @@ describe("addManyUsers", () => {
                 lastName: "Dupont",
                 email: "edouard.dupont1@gmail.com",
                 testing: true,
-                phone: "0645102340",
                 password: "oizjdoiqzeji"
             },
             {
@@ -96,7 +93,6 @@ describe("addManyUsers", () => {
                 lastName: "Dupont",
                 email: "edouard.dupont2@gmail.com",
                 testing: true,
-                phone: "0645102340",
                 password: "oiazjodilpmqzsks"
             },
         ];
@@ -218,7 +214,7 @@ describe("updateOneUser", () => {
         );
     });
     it("Modifier un utilisateur avec des champs requis vide. - E", (done) => {
-        UserService.updateOneUser(id_user_valid, { email: "", firstName: "AlexandrePorteron", phone_number: "0102030405" }, null, function (err, value) {
+        UserService.updateOneUser(id_user_valid, { email: "", firstname: "AlexandrePorteron" }, null, function (err, value) {
             expect(value).to.be.undefined
             expect(err).to.haveOwnProperty('msg')
             expect(err).to.haveOwnProperty('fields_with_error').with.lengthOf(1)
@@ -260,7 +256,7 @@ describe("updateManyUsers", () => {
     it("Modifier plusieurs utilisateurs avec des champs requis vide. - E", (done) => {
         UserService.updateManyUsers(
             tab_id_users,
-            { email: "" }, null,
+            { email: "", lastName: "Luc" }, null,
             function (err, value) {
                 expect(value).to.be.undefined;
                 expect(err).to.haveOwnProperty("msg");
@@ -270,7 +266,6 @@ describe("updateManyUsers", () => {
                 expect(err["fields"]["email"]).to.equal(
                     "Path `email` is required."
                 );
-                // console.log(users)
                 done();
             }
         );
