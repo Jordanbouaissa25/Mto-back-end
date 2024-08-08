@@ -83,7 +83,7 @@ describe("POST - /setting", () => {
 it("Ajouter un setting incorrect. (Avec un champ vide) - E", (done) => {
     chai.request(server).post('/setting').send({
         setting_wind: "km/p",
-        setting_temperature: "°D",
+        setting_temperature: "",
         City: "MontbédoliaCrd",
     }).end((err, res) => {
         expect(res).to.have.status(405)

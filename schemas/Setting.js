@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Définition du schéma des paramètres
-const settingsSchema = new Schema({
+const settingSchema = new Schema({
     setting_id: {
         type: Schema.Types.ObjectId,
         required: true
@@ -37,6 +37,6 @@ const settingsSchema = new Schema({
 });
 
 // Création du modèle Settings à partir du schéma
-const Settings = mongoose.model('Settings', settingsSchema);
+// const Settings = mongoose.model('Settings', settingSchema);
 
-module.exports = Settings;
+module.exports = settingSchema;

@@ -31,7 +31,7 @@ app.use(passport.session())
 
 // Declaration des controller pour utilisateur
 const UserController = require("./controllers/UserController");
-const ArticleController = require('./controllers/ArticleController')
+const SettingController = require('./controllers/SettingController')
 
 const DatabaseMiddleware = require('./middlewares/database')
 const LoggerMiddleware = require('./middlewares/logger')
@@ -42,7 +42,7 @@ app.use(bodyParser.json(), LoggerMiddleware.addLogger);
 // Configuration Swagger
 const swaggerOptions = require(`./swagger.json`);
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.Serve, swaggerUi.setup(swaggerDocs))
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 /* --------------- Création des routes ------------ */
 
@@ -50,10 +50,10 @@ app.use('/api-docs', swaggerUi.Serve, swaggerUi.setup(swaggerDocs))
 app.post('/login', DatabaseMiddleware.checkConnexion, UserController.loginUser)
 
 // Création du endpoint /logout pour connecter un utilisateur
-app.post('/logout', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.logoutUser)
+// app.post('/logout', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.logoutUser)
 
 // Création de endpoint /user pour l'ajout d'un utilisateur
-app.post("/user", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.addOneUser);
+app.post("/user", DatabaseMiddleware.checkConnexion, UserController.addOneUser);
 
 //Création de endpoint /users pour l'ajout de plusieurs utilisateurs
 app.post("/users", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.addManyUsers);
@@ -86,37 +86,37 @@ app.delete("/users", DatabaseMiddleware.checkConnexion, passport.authenticate('j
 
 
 // Création du endpoint pour connecter un utilisateur
-// app.post('/login', DatabaseMiddleware.checkConnexion, ArticleController.loginUser)
+// app.post('/login', DatabaseMiddleware.checkConnexion, SettingController.loginUser)
 
 // Création de l'endpoint /article pour l'ajout d'un article
-app.post("/article", DatabaseMiddleware.checkConnexion, ArticleController.addOneArticle);
+app.post("/article", DatabaseMiddleware.checkConnexion, SettingController.addOneSetting);
 
 // Création de l'endpoint /articles pour l'ajout de plusieurs articles
-app.post("/articles", DatabaseMiddleware.checkConnexion, ArticleController.addManyArticles);
+app.post("/articles", DatabaseMiddleware.checkConnexion, SettingController.addManySettings);
 
 // Création de l'endpoint /article/:id pour la récupération d'un article par ID
-app.get("/article/:id", DatabaseMiddleware.checkConnexion, ArticleController.findOneArticleById);
+app.get("/article/:id", DatabaseMiddleware.checkConnexion, SettingController.findOneSettingById);
 
 // Création de l'endpoint /article pour la récupération d'un article
-app.get("/article", DatabaseMiddleware.checkConnexion, ArticleController.findOneArticle);
+app.get("/article", DatabaseMiddleware.checkConnexion, SettingController.findOneSetting);
 
 // Création de l'endpoint /articles pour la récupération de plusieurs articles par ID
-app.get("/articles", DatabaseMiddleware.checkConnexion, ArticleController.findManyArticlesById);
+app.get("/articles", DatabaseMiddleware.checkConnexion, SettingController.findManySettingsById);
 
 // Création de l'endpoint /articles_by_filters pour chercher des articles
-app.get("/articles_by_filters", DatabaseMiddleware.checkConnexion, ArticleController.findManyArticles);
+app.get("/articles_by_filters", DatabaseMiddleware.checkConnexion, SettingController.findManySettings);
 
 // Création de l'endpoint /article/:id pour la modification d'un article
-app.put("/article/:id", DatabaseMiddleware.checkConnexion, ArticleController.updateOneArticle);
+app.put("/article/:id", DatabaseMiddleware.checkConnexion, SettingController.updateOneSetting);
 
 // Création de l'endpoint /articles pour la modification de plusieurs articles
-app.put("/articles", DatabaseMiddleware.checkConnexion, ArticleController.updateManyArticles);
+app.put("/articles", DatabaseMiddleware.checkConnexion, SettingController.updateManySettings);
 
 // Création de l'endpoint /article/:id pour la suppression d'un article
-app.delete("/article/:id", DatabaseMiddleware.checkConnexion, ArticleController.deleteOneArticle);
+app.delete("/article/:id", DatabaseMiddleware.checkConnexion, SettingController.deleteOneSetting);
 
 // Création de l'endpoint /articles pour la suppression de plusieurs articles
-app.delete("/articles", DatabaseMiddleware.checkConnexion, ArticleController.deleteManyArticles);
+app.delete("/articles", DatabaseMiddleware.checkConnexion, SettingController.deleteManySettings);
 
 // Démarrage de notre serveur sur le port choisi
 app.listen(Config.port, () => {
