@@ -12,75 +12,87 @@ let token = ""
 chai.use(chaiHttp)
 
 
-describe("POST - /user", () => {
-    it("Ajouter un utilisateur. - S", (done) => {
-        chai.request(server).post('/user').send({
-            firstName: "luf",
-            lastName: "Us",
-            email: "lutfu1.us@gmail.com",
-            password: "12345"
+// TEST CONTROLLER - Ajouter un utilisateur (tous les roles)
+describe("POST - /register", () => {
+    it("Ajouter un utilisateur . - S", (done) => {
+        chai.request(server).post('/register').send({
+            firstName: "Test",
+            lastName: "Test",
+            email: "testeur@gmail.com",
+            password: "azerty",
         }).end((err, res) => {
             expect(res).to.have.status(201)
             users.push(res.body)
             done()
         });
     })
-
-    it("Ajouter un utilisateur pour authentification. - S", (done) => {
-        chai.request(server).post('/user').send({
+    it("Ajouter un utilisateur incorrect. (Sans password) - E", (done) => {
+        chai.request(server).post('/register').send({
+            firstName: "skos",
+            lastName: 'Us',
+            email: 'lutfu.us@gmil.com',
+        }).end((err, res) => {
+            // console.log(res)
+            expect(res).to.have.status(405)
+            done()
+        })
+    })
+    it("Ajouter un utilisateur incorrect. (Avec email déjà existant) - E", (done) => {
+        chai.request(server).post('/register').send({
             firstName: "luf",
             lastName: "Us",
-            email: "lutfu1.us13@gmail.com",
-            password: "12345"
+            email: "testeur@gmail.com",
+            password: "azerty"
         }).end((err, res) => {
-            expect(res).to.have.status(201)
-            user = res.body
+            expect(res).to.have.status(405)
             done()
-        });
+        })
     })
-
-    it("Connecter un utilisateur correct. - S", (done) => {
-        chai.request(server).post('/login').send({
-            password: "12345"
+    it("Ajouter un utilisateur incorrect. (Avec un email vide) - E", (done) => {
+        chai.request(server).post('/register').send({
+            firstName: "luffu",
+            lastName: "skdqpo",
+            email: "",
+            password: "azerty"
         }).end((err, res) => {
-            token = res.body.token
+            expect(res).to.have.status(405)
             done()
         })
     })
 })
-it("Ajouter un utilisateur incorrect. (Sans firstName) - E", (done) => {
-    chai.request(server).post('/user').send({
-        lastName: 'Us',
-        email: 'lutfu.us@gmil.com',
-        password: "236595"
-    }).end((err, res) => {
-        expect(res).to.have.status(405)
-        done()
-    })
-})
-it("Ajouter un utilisateur incorrect. (Avec un email existant) - E", (done) => {
-    chai.request(server).post('/user').send({
-        firstName: "luf",
-        lastName: "Us",
-        email: "lutfu.us@gmai.com",
-        password: "65296295"
-    }).end((err, res) => {
-        expect(res).to.have.status(405)
-        done()
-    })
-})
-it("Ajouter un utilisateur incorrect. (Avec un champ vide) - E", (done) => {
-    chai.request(server).post('/user').send({
-        firstName: "luffu",
-        lastName: "",
-        email: "lufu.us@gmai.com",
-        password: "62896595"
-    }).end((err, res) => {
-        expect(res).to.have.status(405)
-        done()
-    })
-})
 
+// TEST CONTROLLER - Connecter un utilisateur (tous les roles)
+describe("POST - /login", () => {
+    it("Connexion utilisateur - S", (done) => {
+        // console.log(users)
+        chai.request(server).post('/login').send({
+            email: "testeur@gmail.com",
+            password: "azerty"
+        }).end((err, res) => {
+            res.should.have.status(200)
+            token = res.body.token
+            done()
+        })
+    })
+    it("Connexion utilisateur - Identifiant incorrect - E", (done) => {
+        chai.request(server).post('/login').send({
+            email: "email_incorrect",
+            password: "azerty"
+        }).end((err, res) => {
+            res.should.have.status(401)
+            done()
+        })
+    })
+    it("Connexion utilisateur - Mot de passe incorrect - E", (done) => {
+        chai.request(server).post('/login').send({
+            email: "testeur@gmail.com",
+            password: "password_incorrect"
+        }).end((err, res) => {
+            res.should.have.status(401)
+            done()
+        })
+    })
+})
 
 describe("POST - /users", () => {
     it("Ajouter des utilisateurs. -S", (done) => {
@@ -88,14 +100,12 @@ describe("POST - /users", () => {
             firstName: "Jordan",
             lastName: "tgt't'(gt",
             email: "jordanbouaissa2saa5@gmail.com",
-            phone: "0788588251",
             password: "5644959"
         },
         {
             firstName: "John",
             lastName: "vrfft",
             email: "jordanbouaissa2598@gmail.com",
-            phone: "0788588289",
             password: "okiàqkjnd"
         }]).end((err, res) => {
             //   console.log(res.body)
@@ -105,18 +115,16 @@ describe("POST - /users", () => {
         });
     })
 
-    it("Ajouter des utilisateurs incorrect. (Sans firstName) - E", (done) => {
+    it("Ajouter des utilisateurs incorrect. (Sans password) - E", (done) => {
         chai.request(server).post('/users').auth(token, { type: "bearer" }).send([{
+            firstName: "klzjdoqs",
             lastName: "gtrgt('",
             email: "jordanbouaissa2sqs5@gmail.com",
-            phone: "0788588251",
-            password: "içdkzeqodk"
         },
         {
+            firstName: "klzjdoodkqqs",
             lastName: "vrfft",
             email: "jordanbouaissazaz25@gmail.com",
-            phone: "0788588250",
-            password: "iojqsdkqpl"
         }]).end((err, res) => {
             expect(res).to.have.status(405)
             done()
@@ -140,7 +148,7 @@ describe("POST - /users", () => {
         chai.request(server).post('/users').auth(token, { type: "bearer" }).send({
             firstName: "luqklnf",
             lastName: "Uskcqs",
-            email: "lutfu.us@gmai.com",
+            email: "testeur@gmail.com",
             password: "ok"
         },
             {
@@ -158,13 +166,11 @@ describe("POST - /users", () => {
             firstName: "Jordan",
             lastName: "",
             email: "jordanbouaissa25@gmail.com",
-            phone: "0788588251",
             password: "iojdjqzodz"
         }, {
             firstName: "John",
             lastName: "",
             email: "jordanbouaissa25@gmail.com",
-            phone: "0788588251",
             password: "oiazjqsdqjopdk"
         }]).end((err, res) => {
             expect(res).to.have.status(405)
@@ -289,7 +295,7 @@ describe("PUT - /user:id", () => {
         })
             .end((err, res) => {
                 res.should.have.status(200)
-                console.log(users)
+                // console.log(users)
                 done()
             })
     })
@@ -313,21 +319,21 @@ describe("PUT - /user:id", () => {
             done();
         });
     });
-    it("Modifier un utilisateur existant avec un champ vide. - E", (done) => {
-        chai.request(server).put(`/user/60c72b2f4f1a4c3d88d9a1d9`).auth(token, { type: "bearer" }).send({
-            firstName: "John Doe",
-            lastName: "",
-        }).end((err, res) => {
-            expect(res).to.have.status(405);
-            done();
-        });
+    it("Modifier un utilisateur avec un champ vide. - E", (done) => {
+        chai.request(server).put('/user' + users[0]._id)
+            .auth(token, { type: 'bearer' })
+            .send({ firstName: '', lastName: 'tissoubebou' })
+            .end((err, res) => {
+                res.should.have.status(405)
+                done()
+            })
     })
     it("Modifier un utilisateur avec un index existant. _ E", (done) => {
         chai.request(server).put('/user/' + users[0]._id).auth(token, { type: "bearer" }).send({
             email: users[1].email,
         })
             .end((err, res) => {
-                console.log(users)
+                // console.log(users)
                 res.should.have.status(405)
                 done()
             })
@@ -364,10 +370,13 @@ describe("PUT - /users", () => {
     })
     it("Modifier des utilisateurs avec un champ vide. -E", (done) => {
         chai.request(server).put('/users').auth(token, { type: "bearer" }).query({ id: _.map(users, '_id') }).send({
-            firstName: "John Doe",
-            lastName: ""
+            firstName: "Jordan",
+            lastName: "tgt't'(gt",
+            email: "",
+            password: "5644959"
         })
             .end((err, res) => {
+                // console.log(res)
                 res.should.have.status(405)
                 done()
             })
@@ -383,30 +392,6 @@ describe("PUT - /users", () => {
     })
 })
 
-
-describe("DELETE - /users", () => {
-    it("Supprimer plusieurs utilisateurs. - S", (done) => {
-        chai.request(server).delete('/users').auth(token, { type: "bearer" }).query({ id: _.map(users, '_id') })
-            .end((err, res) => {
-                res.should.have.status(200)
-                done()
-            })
-    })
-    it("Supprimer plusieurs utilisateurs incorrects (avec un id inexistant). - E", (done) => {
-        chai.request(server).delete('/users/665f18739d3e172be5daf092&665f18739d3e172be5daf093').auth(token, { type: "bearer" })
-            .end((err, res) => {
-                res.should.have.status(404)
-                done()
-            })
-    })
-    it("Supprimer plusieurs utilisateurs incorrects (avec un id invalide). - E", (done) => {
-        chai.request(server).delete('/users').auth(token, { type: "bearer" }).query({ id: ['123', '456'] })
-            .end((err, res) => {
-                res.should.have.status(405)
-                done()
-            })
-    })
-})
 describe("DELETE - /user", () => {
 
     it("supprimer un utilisateur incorrect (avec un id inexistant). - E", (done) => {
@@ -429,5 +414,29 @@ describe("DELETE - /user", () => {
                 res.should.have.status(200)
                 done()
             })
+    })
+
+    describe("DELETE - /users", () => {
+        it("Supprimer plusieurs utilisateurs. - S", (done) => {
+            chai.request(server).delete('/users').auth(token, { type: "bearer" }).query({ id: _.map(users, '_id') })
+                .end((err, res) => {
+                    res.should.have.status(200)
+                    done()
+                })
+        })
+        it("Supprimer plusieurs utilisateurs incorrects (avec un id inexistant). - E", (done) => {
+            chai.request(server).delete('/users/665f18739d3e172be5daf092&665f18739d3e172be5daf093').auth(token, { type: "bearer" })
+                .end((err, res) => {
+                    res.should.have.status(404)
+                    done()
+                })
+        })
+        it("Supprimer plusieurs utilisateurs incorrects (avec un id invalide). - E", (done) => {
+            chai.request(server).delete('/users').auth(token, { type: "bearer" }).query({ id: ['123', '456'] })
+                .end((err, res) => {
+                    res.should.have.status(405)
+                    done()
+                })
+        })
     })
 })

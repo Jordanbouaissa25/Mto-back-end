@@ -53,7 +53,7 @@ app.post('/login', DatabaseMiddleware.checkConnexion, UserController.loginUser)
 // app.post('/logout', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.logoutUser)
 
 // Création de endpoint /user pour l'ajout d'un utilisateur
-app.post("/user", DatabaseMiddleware.checkConnexion, UserController.addOneUser);
+app.post("/register", DatabaseMiddleware.checkConnexion, UserController.addOneUser);
 
 //Création de endpoint /users pour l'ajout de plusieurs utilisateurs
 app.post("/users", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.addManyUsers);
