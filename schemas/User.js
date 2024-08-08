@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     user_id: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: false
     },
     email: {
         type: String,
@@ -19,7 +19,6 @@ const userSchema = new Schema({
     },
     firstName: {
         type: String,
-        required: true
     },
     lastName: {
         type: String
@@ -29,15 +28,15 @@ const userSchema = new Schema({
     },
     unit: {
         type: String,
-        required: true
+        required: false
     },
     wind_speed: {
         type: String,
-        required: true
+        required: false
     },
     city: {
         type: String,
-        required: true
+        required: false
     }
 });
 

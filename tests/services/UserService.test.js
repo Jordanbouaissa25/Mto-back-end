@@ -12,7 +12,6 @@ describe("addOneUser", () => {
             firstName: "Edouard",
             lastName: "Dupont",
             email: "edouard.dupont@gmail.com",
-            username: "edupont20",
             password: "coucou"
         };
         UserService.addOneUser(user, null, function (err, value) {
@@ -27,7 +26,6 @@ describe("addOneUser", () => {
         var user_no_valid = {
             lastName: "Dupont",
             email: "edouard.dupont@gmail.com",
-            username: "edupont",
         };
         UserService.addOneUser(user_no_valid, null, function (err, value) {
             expect(err).to.haveOwnProperty("msg");
@@ -48,14 +46,12 @@ describe("addManyUsers", () => {
                 firstName: "Edouard",
                 lastName: "Dupont",
                 email: "edouard.dupont@gmail.com",
-                username: "edupont",
                 password: "okazqdojksqd"
             },
             {
                 firstName: "Edouard",
                 lastName: "Dupont",
                 email: "edouard.dupont@gmail.com",
-                username: "",
                 testing: true,
                 phone: "0645102340",
                 password: "iojazpqjdozqk"
@@ -64,7 +60,6 @@ describe("addManyUsers", () => {
                 firstName: "Edouard",
                 lastName: "Dupont",
                 email: "edouard.dupont@gmail.com",
-                username: "edupont",
                 testing: true,
                 phone: "0645102340",
                 password: "oajdsziozqp"
@@ -86,14 +81,12 @@ describe("addManyUsers", () => {
                 firstName: "Louison",
                 lastName: "Dupont",
                 email: "edouard.dupont3@gmail.com",
-                username: "edupont",
                 password: "oisdoqsd"
             },
             {
                 firstName: "Jordan",
                 lastName: "Dupont",
                 email: "edouard.dupont1@gmail.com",
-                username: "La",
                 testing: true,
                 phone: "0645102340",
                 password: "oizjdoiqzeji"
@@ -102,7 +95,6 @@ describe("addManyUsers", () => {
                 firstName: "Mathis",
                 lastName: "Dupont",
                 email: "edouard.dupont2@gmail.com",
-                username: "edupont1",
                 testing: true,
                 phone: "0645102340",
                 password: "oiazjodilpmqzsks"
@@ -120,26 +112,26 @@ describe("addManyUsers", () => {
 
 describe("findOneUser", () => {
     it("Chercher un utilisateur par les champs sélectionné. -S", (done) => {
-        UserService.findOneUser(["email", "username"], users[0].username, null, function (err, value) {
+        UserService.findOneUser(["email"], users[0].email, null, function (err, value) {
             expect(value).to.haveOwnProperty('firstName')
             done()
         })
     })
     it("Chercher un utilisateur avec un champ non authorisé. -E", (done) => {
-        UserService.findOneUser(["email", "firstName"], users[0].username, null, function (err, value) {
+        UserService.findOneUser(["email", "firstName"], users[0].email, null, function (err, value) {
             expect(err).to.haveOwnProperty('type_error')
 
             done()
         })
     })
     it("Chercher un utilisateur sans tableau de champ. -E", (done) => {
-        UserService.findOneUser("email", users[0].username, null, function (err, value) {
+        UserService.findOneUser("email", users[0].email, null, function (err, value) {
             expect(err).to.haveOwnProperty('type_error')
             done()
         })
     })
     it("Chercher un utilisateur inexistant. -E", (done) => {
-        UserService.findOneUser(["email"], "users[0].username", null, function (err, value) {
+        UserService.findOneUser(["email"], users[0].email, null, function (err, value) {
             expect(err).to.haveOwnProperty('type_error')
             done()
         })
