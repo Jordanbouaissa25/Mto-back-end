@@ -218,22 +218,16 @@ describe("updateOneUser", () => {
         );
     });
     it("Modifier un utilisateur avec des champs requis vide. - E", (done) => {
-        UserService.updateOneUser(
-            id_user_valid,
-            { firstName: "", lastName: "Luc" }, null,
-            function (err, value) {
-                expect(value).to.be.undefined;
-                expect(err).to.haveOwnProperty("msg");
-                expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
-                expect(err).to.haveOwnProperty("fields");
-                expect(err["fields"]).to.haveOwnProperty("firstName");
-                expect(err["fields"]["firstName"]).to.equal(
-                    "Path `firstName` is required."
-                );
-                done();
-            }
-        );
-    });
+        UserService.updateOneUser(id_user_valid, { email: "", firstName: "AlexandrePorteron", phone_number: "0102030405" }, null, function (err, value) {
+            expect(value).to.be.undefined
+            expect(err).to.haveOwnProperty('msg')
+            expect(err).to.haveOwnProperty('fields_with_error').with.lengthOf(1)
+            expect(err).to.haveOwnProperty('fields')
+            expect(err['fields']).to.haveOwnProperty('email')
+            expect(err['fields']['email']).to.equal('Path `email` is required.')
+            done()
+        })
+    })
 });
 
 describe("updateManyUsers", () => {
@@ -266,16 +260,17 @@ describe("updateManyUsers", () => {
     it("Modifier plusieurs utilisateurs avec des champs requis vide. - E", (done) => {
         UserService.updateManyUsers(
             tab_id_users,
-            { firstName: "", lastName: "Luc" }, null,
+            { email: "" }, null,
             function (err, value) {
                 expect(value).to.be.undefined;
                 expect(err).to.haveOwnProperty("msg");
                 expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
                 expect(err).to.haveOwnProperty("fields");
-                expect(err["fields"]).to.haveOwnProperty("firstName");
-                expect(err["fields"]["firstName"]).to.equal(
-                    "Path `firstName` is required."
+                expect(err["fields"]).to.haveOwnProperty("email");
+                expect(err["fields"]["email"]).to.equal(
+                    "Path `email` is required."
                 );
+                // console.log(users)
                 done();
             }
         );
