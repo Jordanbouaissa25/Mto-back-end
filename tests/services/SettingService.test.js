@@ -147,8 +147,9 @@ describe("addManysettings", () => {
 
 describe("findOneSetting", () => {
     it("Chercher un Setting par les champs sélectionné. - S", (done) => {
-        SettingService.findOneSetting(["city"], settings[0].city, null, function (err, value) {
-            expect(value).to.haveOwnProperty('city');
+        SettingService.findOneSetting(["setting_temperature"], settings[0].setting_temperature, null, function (err, value) {
+            console.log(err, value)
+            expect(value).to.haveOwnProperty('setting_temperature');
             done();
         });
     });
