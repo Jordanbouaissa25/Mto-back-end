@@ -60,7 +60,8 @@ describe("POST - /setting", () => {
         var e = {
             setting_wind: "km/h",
             setting_temperature: "°C",
-            City: "Montbéliard",
+            update_email: "jordanbouaissa25@gmail.com",
+            update_password: "0000",
             user_id: rdm_user(tab_id_users)
         }
         chai.request(server).post('/setting').send(e).end((err, res) => {
@@ -69,10 +70,11 @@ describe("POST - /setting", () => {
             done();
         });
     });
-    it("Ajouter un setting incorrect. (Sans City) - E", (done) => {
+    it("Ajouter un setting incorrect. (Sans update_password) - E", (done) => {
         chai.request(server).post('/setting').send({
             setting_wind: "km/p",
             setting_temperature: "°D",
+            update_email: "sjknfk@gmail.com",
             user_id: rdm_user(tab_id_users)
         }).end((err, res) => {
             expect(res).to.have.status(405)
@@ -84,7 +86,7 @@ it("Ajouter un setting incorrect. (Avec un champ vide) - E", (done) => {
     chai.request(server).post('/setting').send({
         setting_wind: "km/p",
         setting_temperature: "",
-        City: "MontbédoliaCrd",
+        update_email: "sdlsqfjsq@gmail.com"
     }).end((err, res) => {
         expect(res).to.have.status(405)
         done()
@@ -94,17 +96,17 @@ it("Ajouter un setting incorrect. (Avec un champ vide) - E", (done) => {
 describe("POST - /settings", () => {
     it("Ajouter des settings. -S", (done) => {
         chai.request(server).post('/settings').send([{
-            price: 15,
-            quantity: 25,
-            description: "setting sur Montbéliard",
-            name: "John lacours",
+            setting_wind: "km/h",
+            setting_temperature: "°C",
+            update_email: "edupont@gmail.com",
+            update_password: "0000",
             user_id: rdm_user(tab_id_users)
         },
         {
-            price: 50,
-            quantity: 35,
-            description: "setting sur Paris",
-            name: "Djo La Douille",
+            setting_wind: "vm/h",
+            setting_temperature: "°F",
+            update_email: "lucasverlin@gmail.com",
+            update_password: "0023500",
             user_id: rdm_user(tab_id_users)
         }]).end((err, res) => {
             settings = [...settings, ...res.body]
@@ -113,33 +115,33 @@ describe("POST - /settings", () => {
         });
     })
 
-    it("Ajouter des settings incorrect. (Sans name) - E", (done) => {
+    it("Ajouter des settings incorrect. (Sans setting_wind) - E", (done) => {
         chai.request(server).post('/settings').send([{
-            price: 5660,
-            quantity: 3545,
-            description: "setting sur Pclkdsaris",
+            setting_temperature: "°P",
+            update_email: "jordanbouaissacsok25gmail.com",
+            update_password: "000520",
         },
         {
-            price: 55630,
-            quantity: 35485,
-            description: "Artiidqosicle sur Paris",
+            setting_temperature: "°C",
+            update_email: "jordanbouaissa9025gmail.com",
+            update_password: "1234",
         }]).end((err, res) => {
             expect(res).to.have.status(405)
             done()
         })
     })
 
-    it("Ajouter des settings incorrect. (sans description) - E", (done) => {
+    it("Ajouter des settings incorrect. (sans setting_temperature) - E", (done) => {
         chai.request(server).post('/settings').send([{
-            name: "John lacolsmkf^surs",
-            price: 1455,
-            quantity: 2545,
+            setting_wind: "kmpp/h",
+            update_email: "jordanradio25gmail.com",
+            update_password: "0000",
             user_id: rdm_user(tab_id_users)
         },
         {
-            name: "Djo La Dsplp^sldsouilles",
-            price: 1465646555,
-            quantity: 289485545,
+            setting_wind: "kmijd/h",
+            update_email: "jordanbouagmail.com",
+            update_password: "5999",
             user_id: rdm_user(tab_id_users)
         }]).end((err, res) => {
             expect(res).to.have.status(405)
@@ -149,16 +151,16 @@ describe("POST - /settings", () => {
 
     it("Ajouter des settings incorrect. (Avec un champ vide) - E", (done) => {
         chai.request(server).post('/settings').send([{
-            price: 50,
-            quantity: 35,
-            description: "",
-            name: "Djo La Douille",
+            setting_wind: "km/p",
+            setting_temperature: "ksdl",
+            update_email: "",
+            update_password: "0000",
             user_id: rdm_user(tab_id_users)
         }, {
-            price: 50,
-            quantity: 35,
-            description: "",
-            name: "John Lacours",
+            setting_wind: "kmdsklf/h",
+            setting_temperature: "°dslC",
+            update_email: "",
+            update_password: "0000",
             user_id: rdm_user(tab_id_users)
         }]).end((err, res) => {
             expect(res).to.have.status(405)
@@ -169,13 +171,13 @@ describe("POST - /settings", () => {
 
 describe("GET - /setting", () => {
     it("Chercher un setting valide. - S", (done) => {
-        chai.request(server).get('/setting').query({ fields: ["name"], value: settings[0].name }).end((err, res) => {
+        chai.request(server).get('/setting').query({ fields: ["update_email"], value: settings[0].update_email }).end((err, res) => {
             res.should.have.status(200);
             done();
         });
     });
     it("Chercher un setting avec un champ non autorisé. - E", (done) => {
-        chai.request(server).get('/setting').query({ fields: ["nonexistentField"], value: settings[0].name }).end((err, res) => {
+        chai.request(server).get('/setting').query({ fields: ["nonexistentField"], value: settings[0].update_email }).end((err, res) => {
             res.should.have.status(405);
             done();
         });
@@ -187,7 +189,7 @@ describe("GET - /setting", () => {
         });
     });
     it("Chercher un setting inexistant. - E", (done) => {
-        chai.request(server).get('/setting').query({ fields: ["name"], value: "TitreInexistant" }).end((err, res) => {
+        chai.request(server).get('/setting').query({ fields: ["update_email"], value: "TitreInexistant" }).end((err, res) => {
             res.should.have.status(404);
             done();
         });
@@ -309,10 +311,10 @@ describe("PUT - /setting/:id", () => {
 describe("PUT - /settings", () => {
     it("Modifier plusieurs settings. - S", (done) => {
         chai.request(server).put('/settings').query({ id: _.map(settings, '_id') }).send({
-            name: "Djo La Douille"
+            update_email: "bonjourlavie@gmail.com"
         },
             {
-                name: "John lacours"
+                update_email: "aurevoirlavie@gmail.com"
             })
             .end((err, res) => {
                 res.should.have.status(200)
@@ -321,7 +323,9 @@ describe("PUT - /settings", () => {
     })
     it("Modifier plusieurs settings avec ID ivalide. -E", (done) => {
         chai.request(server).put('/settings').query({ id: ["1234", "616546"] }).send({
-            name: "Djo La Douille"
+            update_email: "jordanmonroule@gmail.com"
+        }, {
+            update_email: "Parisiendu75@gmail.com"
         })
             .end((err, res) => {
                 res.should.have.status(405)
@@ -330,7 +334,9 @@ describe("PUT - /settings", () => {
     })
     it("Modifier des settings inexistants. -E", (done) => {
         chai.request(server).put('/settings').query({ id: ["6679773379a3a34adc0f05bf"] }).send({
-            name: "djsjflq"
+            setting_temperature: "°ppp"
+        }, {
+            update_email: "nsfksjks"
         })
             .end((err, res) => {
                 res.should.have.status(404)
@@ -339,8 +345,8 @@ describe("PUT - /settings", () => {
     })
     it("Modifier des settings avec un champ vide. -E", (done) => {
         chai.request(server).put('/settings').query({ id: _.map(settings, '_id') }).send({
-            name: "John Lacours",
-            description: ""
+            update_email: "JohnLacours@gmail.com",
+            update_password: ""
         })
             .end((err, res) => {
                 res.should.have.status(405)
@@ -349,7 +355,7 @@ describe("PUT - /settings", () => {
     })
     it("Modifier des settings avec un id existant. -E", (done) => {
         chai.request(server).put('/settings').query({ _id: _.map(settings, '_id') }).send({
-            name: settings[1].name
+            update_email: settings[1].update_email
         },
         )
             .end((err, res) => {

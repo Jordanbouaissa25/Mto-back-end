@@ -232,14 +232,15 @@ describe("updateOneSetting", () => {
     it("Modifier un Setting correct. - S", (done) => {
         SettingService.updateOneSetting(
             id_setting_valid,
-            { city: "Updated city", setting_temperature: "Updated setting_temperature" },
+            { city: "Updated city", update_password: "Updated update_password" },
             function (err, value) {
+                // console.log(err)
                 expect(value).to.be.a("object");
                 expect(value).to.haveOwnProperty("_id");
                 expect(value).to.haveOwnProperty("city");
                 //  expect(value).to.haveOwnProperty("content");
                 expect(value["city"]).to.be.equal("Updated city");
-                expect(value["setting_temperature"]).to.be.equal("Updated setting_temperature");
+                expect(value["update_password"]).to.be.equal("Updated update_password");
                 done();
             }
         );
@@ -262,14 +263,14 @@ describe("updateOneSetting", () => {
     it("Modifier un Setting avec des champs requis vides. - E", (done) => {
         SettingService.updateOneSetting(
             id_setting_valid,
-            { city: "", setting_temperature: "Updated setting_temperature" },
+            { update_email: "", update_password: "Updated update_password" },
             function (err, value) {
-                // expect(value).to.be.undefined;
-                //  console.log(err)
+                // console.log(err, value)
+                expect(value).to.be.undefined;
                 expect(err).to.haveOwnProperty("msg");
                 expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
                 expect(err).to.haveOwnProperty("fields");
-                expect(err["fields"]).to.haveOwnProperty("city");
+                expect(err["fields"]).to.haveOwnProperty("update_email");
 
                 done();
             }
@@ -281,9 +282,9 @@ describe("updateManysettings", () => {
     it("Modifier plusieurs settings correctement. - S", (done) => {
         SettingService.updateManySettings(
             tab_id_settings,
-            { setting_temperature: "Bulk Updated setting_temperature" },
+            { update_password: "Bulk Updated update_password" },
             function (err, value) {
-                //  console.log(value)
+                // console.log(err, value)
                 expect(value).to.haveOwnProperty("modifiedCount");
                 expect(value).to.haveOwnProperty("matchedCount");
                 expect(value["matchedCount"]).to.be.equal(tab_id_settings.length);
@@ -310,14 +311,14 @@ describe("updateManysettings", () => {
     it("Modifier plusieurs settings avec des champs requis vides. - E", (done) => {
         SettingService.updateManySettings(
             tab_id_settings,
-            { city: "", setting_temperature: "Bulk Updated setting_temperature" },
+            { update_email: "", update_password: "Bulk Updated update_password" },
             function (err, value) {
-                //  console.log(err)
+                console.log(err, value)
                 expect(value).to.be.undefined;
                 expect(err).to.haveOwnProperty("msg");
                 expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
                 expect(err).to.haveOwnProperty("fields");
-                expect(err["fields"]).to.haveOwnProperty("city");
+                expect(err["fields"]).to.haveOwnProperty("update_email");
 
                 done();
             }
