@@ -313,7 +313,7 @@ describe("updateManysettings", () => {
             tab_id_settings,
             { update_email: "", update_password: "Bulk Updated update_password" },
             function (err, value) {
-                console.log(err, value)
+                // console.log(err, value)
                 expect(value).to.be.undefined;
                 expect(err).to.haveOwnProperty("msg");
                 expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);

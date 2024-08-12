@@ -36,14 +36,6 @@ const settingSchema = new Schema({
         type: String,
         required: true
     },
-    Dark_mode: {
-        type: String,
-        required: false
-    },
-    White_mode: {
-        type: String,
-        required: false
-    },
 });
 
 // Création du modèle Settings à partir du schéma

@@ -20,6 +20,12 @@ describe("SettingControllers", () => {
     require("./controllers/SettingController.test")
 })
 
+// describe("CityService", () => {
+//     require("./controllers/CityService.test")
+// })
+
+// describe
+
 describe("API - Mongo", () => {
     it("Vider les dbs. - S", () => {
         if (process.env.npm_lifecycle_event == 'test')

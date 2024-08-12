@@ -103,12 +103,13 @@ describe("POST - /settings", () => {
             user_id: rdm_user(tab_id_users)
         },
         {
-            setting_wind: "vm/h",
+            setting_wind: "mi/h",
             setting_temperature: "°F",
             update_email: "lucasverlin@gmail.com",
             update_password: "0023500",
             user_id: rdm_user(tab_id_users)
         }]).end((err, res) => {
+            // console.log(res)
             settings = [...settings, ...res.body]
             expect(res).to.have.status(201)
             done()
@@ -171,7 +172,8 @@ describe("POST - /settings", () => {
 
 describe("GET - /setting", () => {
     it("Chercher un setting valide. - S", (done) => {
-        chai.request(server).get('/setting').query({ fields: ["update_email"], value: settings[0].update_email }).end((err, res) => {
+        chai.request(server).get('/setting').query({ fields: ["setting_temperature"], value: settings[0].setting_temperature }).end((err, res) => {
+            // console.log(err, res)
             res.should.have.status(200);
             done();
         });
@@ -189,7 +191,8 @@ describe("GET - /setting", () => {
         });
     });
     it("Chercher un setting inexistant. - E", (done) => {
-        chai.request(server).get('/setting').query({ fields: ["update_email"], value: "TitreInexistant" }).end((err, res) => {
+        chai.request(server).get('/setting').query({ fields: ["setting_wind"], value: "Setting inexistant" }).end((err, res) => {
+            // console.log(res)
             res.should.have.status(404);
             done();
         });
@@ -299,7 +302,7 @@ describe("PUT - /setting/:id", () => {
     });
     it("Modifier un setting avec un champ vide. - E", (done) => {
         chai.request(server).put(`/setting/${settings[0]._id}`).send({
-            name: ""
+            update_email: ""
         }).end((err, res) => {
             expect(res).to.have.status(405);
             done();
@@ -311,12 +314,10 @@ describe("PUT - /setting/:id", () => {
 describe("PUT - /settings", () => {
     it("Modifier plusieurs settings. - S", (done) => {
         chai.request(server).put('/settings').query({ id: _.map(settings, '_id') }).send({
-            update_email: "bonjourlavie@gmail.com"
-        },
-            {
-                update_email: "aurevoirlavie@gmail.com"
-            })
+            setting_temperature: "°C", setting_wind: "km/h"
+        })
             .end((err, res) => {
+                // console.log(res)
                 res.should.have.status(200)
                 done()
             })
@@ -334,9 +335,7 @@ describe("PUT - /settings", () => {
     })
     it("Modifier des settings inexistants. -E", (done) => {
         chai.request(server).put('/settings').query({ id: ["6679773379a3a34adc0f05bf"] }).send({
-            setting_temperature: "°ppp"
-        }, {
-            update_email: "nsfksjks"
+            name: "°ppp"
         })
             .end((err, res) => {
                 res.should.have.status(404)

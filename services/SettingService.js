@@ -130,7 +130,7 @@ module.exports.findOneSettingById = function (setting_id, options, callback) {
 
 module.exports.findOneSetting = function (tab_field, value, option, callback) {
     var opt = { populate: option && option.populate ? ["user_id"] : [] }
-    var field_unique = ["city", "wind_temperature"]
+    var field_unique = ["setting_wind", "setting_temperature"]
     if (tab_field && Array.isArray(tab_field) && value
         && _.filter(tab_field, (e) => {
             return field_unique.indexOf(e) == -1
