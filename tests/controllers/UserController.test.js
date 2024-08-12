@@ -319,21 +319,23 @@ describe("PUT - /user:id", () => {
             done();
         });
     });
-    it("Modifier un utilisateur avec un champ vide. - E", (done) => {
-        chai.request(server).put('/user' + users[0]._id)
-            .auth(token, { type: 'bearer' })
-            .send({ firstName: '', lastName: 'tissoubebou' })
-            .end((err, res) => {
-                res.should.have.status(405)
-                done()
-            })
-    })
     it("Modifier un utilisateur avec un index existant. _ E", (done) => {
         chai.request(server).put('/user/' + users[0]._id).auth(token, { type: "bearer" }).send({
             email: users[1].email,
         })
             .end((err, res) => {
                 // console.log(users)
+                res.should.have.status(405)
+                done()
+            })
+    })
+    it("Modifier un utilisateur avec un champ vide. - E", (done) => {
+        chai.request(server).put('/user/' + users[0]._id)
+            .auth(token, { type: 'bearer' })
+            .send({
+                email: "", password: "$2a$10$fZ8kX9n8ZVGFpl3NPkj37eV8F2eJvqY8Og2j1xuUgCIPReLYfqwvK", lastName: "Test"
+            })
+            .end((err, res) => {
                 res.should.have.status(405)
                 done()
             })
@@ -394,6 +396,14 @@ describe("PUT - /users", () => {
 
 describe("DELETE - /user", () => {
 
+    it("Supprimer un utilisateur. - S", (done) => {
+        chai.request(server).delete('/user/' + users[1]._id)
+            .auth(token, { type: 'bearer' })
+            .end((err, res) => {
+                res.should.have.status(200)
+                done()
+            })
+    })
     it("supprimer un utilisateur incorrect (avec un id inexistant). - E", (done) => {
         chai.request(server).delete('/user/665f18739d3e172be5daf092').auth(token, { type: "bearer" })
             .end((err, res) => {
@@ -408,35 +418,33 @@ describe("DELETE - /user", () => {
                 done()
             })
     })
-    it("Supprimer un utilisateur. - S", (done) => {
-        chai.request(server).delete('/user/' + user._id).auth(token, { type: "bearer" })
+
+
+})
+
+describe("DELETE - /users", () => {
+
+    it("Supprimer plusieurs utilisateurs incorrects (avec un id invalide). - E", (done) => {
+        chai.request(server).delete('/users').query({ id: [123, 456] })
+            .auth(token, { type: 'bearer' })
+            .end((err, res) => {
+                // console.log(res.body)
+                res.should.have.status(405)
+                done()
+            })
+    })
+    it("Supprimer plusieurs utilisateurs incorrects (avec un id inexistant). - E", (done) => {
+        chai.request(server).delete('/users/665f18739d3e172be5daf092&665f18739d3e172be5daf093').auth(token, { type: "bearer" })
+            .end((err, res) => {
+                res.should.have.status(404)
+                done()
+            })
+    })
+    it("Supprimer plusieurs utilisateurs. - S", (done) => {
+        chai.request(server).delete('/users').auth(token, { type: "bearer" }).query({ id: _.map(users, '_id') })
             .end((err, res) => {
                 res.should.have.status(200)
                 done()
             })
-    })
-
-    describe("DELETE - /users", () => {
-        it("Supprimer plusieurs utilisateurs. - S", (done) => {
-            chai.request(server).delete('/users').auth(token, { type: "bearer" }).query({ id: _.map(users, '_id') })
-                .end((err, res) => {
-                    res.should.have.status(200)
-                    done()
-                })
-        })
-        it("Supprimer plusieurs utilisateurs incorrects (avec un id inexistant). - E", (done) => {
-            chai.request(server).delete('/users/665f18739d3e172be5daf092&665f18739d3e172be5daf093').auth(token, { type: "bearer" })
-                .end((err, res) => {
-                    res.should.have.status(404)
-                    done()
-                })
-        })
-        it("Supprimer plusieurs utilisateurs incorrects (avec un id invalide). - E", (done) => {
-            chai.request(server).delete('/users').auth(token, { type: "bearer" }).query({ id: ['123', '456'] })
-                .end((err, res) => {
-                    res.should.have.status(405)
-                    done()
-                })
-        })
     })
 })

@@ -147,57 +147,6 @@ module.exports.findManyUsersById = function (req, res) {
         }
     })
 }
-
-// La fonction permet de supprimer un utilisateur.
-module.exports.deleteOneUser = function (req, res) {
-    req.log.info("Supprimer un utilisateur")
-    UserService.deleteOneUser(req.params.id, null, function (err, value) {
-        if (err && err.type_error == "no-found") {
-            res.statusCode = 404
-            res.send(err)
-        }
-        else if (err && err.type_error == "no-valid") {
-            res.statusCode = 405
-            res.send(err)
-        }
-        else if (err && err.type_error == "error-mongo") {
-            res.statusCode = 500
-            res.send(err)
-        }
-        else {
-            res.statusCode = 200
-            res.send(value)
-        }
-    })
-}
-
-// La fonction permet de supprimer plusieurs utilisateurs.
-module.exports.deleteManyUsers = function (req, res) {
-
-    var arg = req.query.id
-    if (arg && !Array.isArray(arg))
-        arg = [arg]
-    req.log.info("Supprimer plusieurs utilisateurs")
-    UserService.deleteManyUsers(arg, null, function (err, value) {
-        if (err && err.type_error == "no-found") {
-            res.statusCode = 404
-            res.send(err)
-        }
-        else if (err && err.type_error == "no-valid") {
-            res.statusCode = 405
-            res.send(err)
-        }
-        else if (err && err.type_error == "error-mongo") {
-            res.statusCode = 500
-            res.send(err)
-        }
-        else {
-            res.statusCode = 200
-            res.send(value)
-        }
-    })
-}
-
 module.exports.updateOneUser = function (req, res) {
     const userId = req.params.id;
     const userData = req.body;
@@ -242,3 +191,56 @@ module.exports.updateManyUsers = function (req, res) {
         }
     });
 };
+
+// La fonction permet de supprimer un utilisateur.
+module.exports.deleteOneUser = function (req, res) {
+    req.log.info("Supprimer un utilisateur")
+    UserService.deleteOneUser(req.params.id, null, function (err, value) {
+        if (err && err.type_error == "no-found") {
+            res.statusCode = 404
+            res.send(err)
+        }
+        else if (err && err.type_error == "no-valid") {
+            res.statusCode = 405
+            res.send(err)
+        }
+        else if (err && err.type_error == "error-mongo") {
+            res.statusCode = 500
+            res.send(err)
+        }
+        else {
+            res.statusCode = 200
+            res.send(value)
+        }
+    })
+}
+
+// La fonction permet de supprimer plusieurs utilisateurs.
+module.exports.deleteManyUsers = function (req, res) {
+    //  console.log(arg)
+    var arg = req.query.id
+    if (arg && !Array.isArray(arg))
+        arg = [arg]
+    req.log.info("Supprimer plusieurs utilisateurs")
+    //  console.log(arg)
+    UserService.deleteManyUsers(arg, null, function (err, value) {
+        //    console.log(err)
+        if (err && err.type_error == "no-found") {
+            res.statusCode = 404
+            res.send(err)
+        }
+        else if (err && err.type_error == "no-valid") {
+            res.statusCode = 405
+            res.send(err)
+        }
+        else if (err && err.type_error == "error-mongo") {
+            res.statusCode = 500
+            res.send(err)
+        }
+        else {
+            res.statusCode = 200
+            res.send(value)
+        }
+    })
+}
+

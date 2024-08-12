@@ -315,6 +315,15 @@ describe("deleteManyUsers", () => {
             done();
         });
     });
+    it("Supprimer plusieurs utilisateurs avec id mauvais format. - E", (done) => {
+        UserService.deleteManyUsers(["1200", "1212"], null, function (err, value) {
+            expect(err).to.be.a("object");
+            expect(err).to.haveOwnProperty("msg");
+            expect(err).to.haveOwnProperty("type_error");
+            expect(err["type_error"]).to.be.equal("no-valid");
+            done();
+        });
+    });
     it("Supprimer plusieurs utilisateurs correctement. - S", (done) => {
         UserService.deleteManyUsers(tab_id_users, null, function (err, value) {
             expect(value).to.be.a("object");

@@ -8,13 +8,13 @@ const mongoose = require('mongoose')
 //     require("./services/UserService.test");
 // });
 
-describe("UserController", () => {
-    require("./controllers/UserController.test")
-})
-
-// describe("SettingService", () => {
-//     require('./services/SettingService.test')
+// describe("UserController", () => {
+//     require("./controllers/UserController.test")
 // })
+
+describe("SettingService", () => {
+    require('./services/SettingService.test')
+})
 
 // describe("SettingControllers", () => {
 //     require("./controllers/SettingController.test")

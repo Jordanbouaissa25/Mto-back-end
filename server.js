@@ -49,9 +49,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 // Création du endpoint pour connecter un utilisateur
 app.post('/login', DatabaseMiddleware.checkConnexion, UserController.loginUser)
 
-// Création du endpoint /logout pour connecter un utilisateur
-// app.post('/logout', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.logoutUser)
-
 // Création de endpoint /user pour l'ajout d'un utilisateur
 app.post("/register", DatabaseMiddleware.checkConnexion, UserController.addOneUser);
 
@@ -82,41 +79,44 @@ app.delete("/user/:id", DatabaseMiddleware.checkConnexion, passport.authenticate
 // Création du endpoint /users pour la supression de plusieurs utilisateurs
 app.delete("/users", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.deleteManyUsers);
 
+// Création du endpoint /logout pour connecter un utilisateur
+// app.post('/logout', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.logoutUser)
+
 // Démarrage de notre serveur le port choisi
 
 
 // Création du endpoint pour connecter un utilisateur
 // app.post('/login', DatabaseMiddleware.checkConnexion, SettingController.loginUser)
 
-// Création de l'endpoint /article pour l'ajout d'un article
-app.post("/article", DatabaseMiddleware.checkConnexion, SettingController.addOneSetting);
+// Création de l'endpoint /setting pour l'ajout d'un setting
+app.post("/setting", DatabaseMiddleware.checkConnexion, SettingController.addOneSetting);
 
-// Création de l'endpoint /articles pour l'ajout de plusieurs articles
-app.post("/articles", DatabaseMiddleware.checkConnexion, SettingController.addManySettings);
+// Création de l'endpoint /settings pour l'ajout de plusieurs settings
+app.post("/settings", DatabaseMiddleware.checkConnexion, SettingController.addManySettings);
 
-// Création de l'endpoint /article/:id pour la récupération d'un article par ID
-app.get("/article/:id", DatabaseMiddleware.checkConnexion, SettingController.findOneSettingById);
+// Création de l'endpoint /setting/:id pour la récupération d'un setting par ID
+app.get("/setting/:id", DatabaseMiddleware.checkConnexion, SettingController.findOneSettingById);
 
-// Création de l'endpoint /article pour la récupération d'un article
-app.get("/article", DatabaseMiddleware.checkConnexion, SettingController.findOneSetting);
+// Création de l'endpoint /setting pour la récupération d'un setting
+app.get("/setting", DatabaseMiddleware.checkConnexion, SettingController.findOneSetting);
 
-// Création de l'endpoint /articles pour la récupération de plusieurs articles par ID
-app.get("/articles", DatabaseMiddleware.checkConnexion, SettingController.findManySettingsById);
+// Création de l'endpoint /settings pour la récupération de plusieurs settings par ID
+app.get("/settings", DatabaseMiddleware.checkConnexion, SettingController.findManySettingsById);
 
-// Création de l'endpoint /articles_by_filters pour chercher des articles
-app.get("/articles_by_filters", DatabaseMiddleware.checkConnexion, SettingController.findManySettings);
+// Création de l'endpoint /settings_by_filters pour chercher des settings
+app.get("/settings_by_filters", DatabaseMiddleware.checkConnexion, SettingController.findManySettings);
 
-// Création de l'endpoint /article/:id pour la modification d'un article
-app.put("/article/:id", DatabaseMiddleware.checkConnexion, SettingController.updateOneSetting);
+// Création de l'endpoint /setting/:id pour la modification d'un setting
+app.put("/setting/:id", DatabaseMiddleware.checkConnexion, SettingController.updateOneSetting);
 
-// Création de l'endpoint /articles pour la modification de plusieurs articles
-app.put("/articles", DatabaseMiddleware.checkConnexion, SettingController.updateManySettings);
+// Création de l'endpoint /settings pour la modification de plusieurs settings
+app.put("/settings", DatabaseMiddleware.checkConnexion, SettingController.updateManySettings);
 
-// Création de l'endpoint /article/:id pour la suppression d'un article
-app.delete("/article/:id", DatabaseMiddleware.checkConnexion, SettingController.deleteOneSetting);
+// Création de l'endpoint /setting/:id pour la suppression d'un setting
+app.delete("/setting/:id", DatabaseMiddleware.checkConnexion, SettingController.deleteOneSetting);
 
-// Création de l'endpoint /articles pour la suppression de plusieurs articles
-app.delete("/articles", DatabaseMiddleware.checkConnexion, SettingController.deleteManySettings);
+// Création de l'endpoint /settings pour la suppression de plusieurs settings
+app.delete("/settings", DatabaseMiddleware.checkConnexion, SettingController.deleteManySettings);
 
 // Démarrage de notre serveur sur le port choisi
 app.listen(Config.port, () => {
