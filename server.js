@@ -32,6 +32,7 @@ app.use(passport.session())
 // Declaration des controller pour utilisateur
 const UserController = require("./controllers/UserController");
 const SettingController = require('./controllers/SettingController')
+const WeatherController = require('./controllers/WeatherController')
 
 const DatabaseMiddleware = require('./middlewares/database')
 const LoggerMiddleware = require('./middlewares/logger')
@@ -117,6 +118,37 @@ app.delete("/setting/:id", DatabaseMiddleware.checkConnexion, SettingController.
 
 // Création de l'endpoint /settings pour la suppression de plusieurs settings
 app.delete("/settings", DatabaseMiddleware.checkConnexion, SettingController.deleteManySettings);
+
+
+// Création de l'endpoint /setting pour l'ajout d'un setting
+app.post("/weather", DatabaseMiddleware.checkConnexion, WeatherController.addOneWeather);
+
+// Création de l'endpoint /settings pour l'ajout de plusieurs settings
+app.post("/weather", DatabaseMiddleware.checkConnexion, WeatherController.addManyWeathers);
+
+// Création de l'endpoint /setting/:id pour la récupération d'un setting par ID
+app.get("/weather/:id", DatabaseMiddleware.checkConnexion, WeatherController.findOneWeatherById);
+
+// Création de l'endpoint /setting pour la récupération d'un setting
+app.get("/weather", DatabaseMiddleware.checkConnexion, WeatherController.findOneWeather);
+
+// Création de l'endpoint /settings pour la récupération de plusieurs settings par ID
+app.get("/weather", DatabaseMiddleware.checkConnexion, WeatherController.findManyWeathersById);
+
+// Création de l'endpoint /settings_by_filters pour chercher des settings
+app.get("/weathers_by_filters", DatabaseMiddleware.checkConnexion, WeatherController.findManyWeathers);
+
+// Création de l'endpoint /setting/:id pour la modification d'un setting
+app.put("/weather/:id", DatabaseMiddleware.checkConnexion, WeatherController.updateOneWeather);
+
+// Création de l'endpoint /settings pour la modification de plusieurs settings
+app.put("/weathers", DatabaseMiddleware.checkConnexion, WeatherController.updateManyWeathers);
+
+// Création de l'endpoint /setting/:id pour la suppression d'un setting
+app.delete("/weather/:id", DatabaseMiddleware.checkConnexion, WeatherController.deleteOneWeather);
+
+// Création de l'endpoint /settings pour la suppression de plusieurs settings
+app.delete("/weathers", DatabaseMiddleware.checkConnexion, WeatherController.deleteManyWeathers);
 
 // Démarrage de notre serveur sur le port choisi
 app.listen(Config.port, () => {
