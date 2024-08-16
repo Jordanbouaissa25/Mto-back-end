@@ -62,7 +62,7 @@ describe("addOneWeather", () => {
             user_id: rdm_user(tab_id_users)
         };
         WeatherService.addOneWeather(weather, null, function (err, value) {
-            console.log(err, value)
+            // console.log(err, value)
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
             id_weather_valid = value._id;
@@ -135,7 +135,7 @@ describe("addManyWeathers", () => {
         WeatherService.addManyWeathers(weathers_tab, function (err, value) {
             tab_id_weathers = _.map(value, "_id");
             weathers = [...value, ...weathers];
-            console.log(value)
+            //  console.log(value)
             expect(value).lengthOf(2);
             done();
         });
@@ -145,8 +145,8 @@ describe("addManyWeathers", () => {
 describe("findOneWeather", () => {
     it("Chercher un Weather par les champs sélectionné. - S", (done) => {
         WeatherService.findOneWeather(["city"], weathers[0].city, null, function (err, value) {
-            console.log(weathers[0])
-            console.log(err, value)
+            // console.log(weathers[0])
+            // console.log(err, value)
             expect(value).to.haveOwnProperty('humidity');
             done();
         });
@@ -230,15 +230,15 @@ describe("updateOneWeather", () => {
     it("Modifier un Weather correct. - S", (done) => {
         WeatherService.updateOneWeather(
             id_weather_valid,
-            { city: "Updated city", humidity: "Updated humidity" },
+            { city: "Updated city", wind: "Updated wind" },
             function (err, value) {
-                // console.log(err)
+                // console.log(value)
                 expect(value).to.be.a("object");
                 expect(value).to.haveOwnProperty("_id");
                 expect(value).to.haveOwnProperty("city");
                 //  expect(value).to.haveOwnProperty("content");
                 expect(value["city"]).to.be.equal("Updated city");
-                expect(value["humidity"]).to.be.equal("Updated humidity");
+                expect(value["wind"]).to.be.equal("Updated wind");
                 done();
             }
         );
@@ -247,7 +247,7 @@ describe("updateOneWeather", () => {
     it("Modifier un Weather avec id incorrect. - E", (done) => {
         WeatherService.updateOneWeather(
             "invalid_id",
-            { city: "Updated city", temp: "Updated temp" },
+            { city: "Updated city", wind: "Updated wind" },
             function (err, value) {
                 expect(err).to.be.a("object");
                 expect(err).to.haveOwnProperty("msg");
@@ -261,7 +261,7 @@ describe("updateOneWeather", () => {
     it("Modifier un Weather avec des champs requis vides. - E", (done) => {
         WeatherService.updateOneWeather(
             id_weather_valid,
-            { city: "", wind: "" },
+            { city: "", wind: "kdfjdl" },
             function (err, value) {
                 // console.log(err, value)
                 expect(value).to.be.undefined;
@@ -269,7 +269,6 @@ describe("updateOneWeather", () => {
                 expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
                 expect(err).to.haveOwnProperty("fields");
                 expect(err["fields"]).to.haveOwnProperty("city");
-
                 done();
             }
         );

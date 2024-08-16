@@ -59,9 +59,9 @@ describe("POST - /weather", () => {
     it("Ajouter un weather. - S", (done) => {
         var e = {
             wind: "km/h",
-            temp: "°C",
+            temp: 30,
             city: "Montbéliard",
-            humidity: "50%",
+            humidity: 50,
             user_id: rdm_user(tab_id_users)
         }
         chai.request(server).post('/weather').send(e).end((err, res) => {
@@ -73,7 +73,7 @@ describe("POST - /weather", () => {
     it("Ajouter un weather incorrect. (Sans humidity) - E", (done) => {
         chai.request(server).post('/weather').send({
             wind: "km/p",
-            temp: "°D",
+            temp: 30,
             city: "snfhs",
             user_id: rdm_user(tab_id_users)
         }).end((err, res) => {
@@ -96,16 +96,16 @@ describe("POST - /weathers", () => {
     it("Ajouter des weathers. -S", (done) => {
         chai.request(server).post('/weathers').send([{
             wind: "km/h",
-            temp: "°C",
+            temp: 28,
             city: "Phuket",
-            humidity: "75%",
+            humidity: 75,
             user_id: rdm_user(tab_id_users)
         },
         {
             wind: "mi/h",
-            temp: "°F",
+            temp: 45,
             city: "Brisbane",
-            humidity: "45%",
+            humidity: 45,
             user_id: rdm_user(tab_id_users)
         }]).end((err, res) => {
             // console.log(res)
@@ -117,14 +117,14 @@ describe("POST - /weathers", () => {
 
     it("Ajouter des weathers incorrect. (Sans wind) - E", (done) => {
         chai.request(server).post('/weathers').send([{
-            temp: "°P",
+            temp: 1000,
             city: "djsoid",
-            humidity: "sijoos"
+            humidity: 300
         },
         {
-            temp: "°C",
+            temp: 50,
             city: "Londres",
-            humidity: "15%"
+            humidity: 150
         }]).end((err, res) => {
             expect(res).to.have.status(405)
             done()
@@ -133,13 +133,13 @@ describe("POST - /weathers", () => {
 
     it("Ajouter des weathers incorrect. (sans temp) - E", (done) => {
         chai.request(server).post('/weathers').send([{
-            weather_wind: "kmpp/h",
-            humidity: "oisjcos",
+            wind: "kmi/h",
+            humidity: 21,
             user_id: rdm_user(tab_id_users)
         },
         {
-            wind: "kmijd/h",
-            humidity: "sijds",
+            wind: "kmij/h",
+            humidity: 1001,
             user_id: rdm_user(tab_id_users)
         }]).end((err, res) => {
             expect(res).to.have.status(405)
@@ -150,15 +150,15 @@ describe("POST - /weathers", () => {
     it("Ajouter des weathers incorrect. (Avec un champ vide) - E", (done) => {
         chai.request(server).post('/weathers').send([{
             wind: "km/p",
-            temp: "ksdl",
+            temp: 30,
             city: "",
-            humidity: "",
+            humidity: 45,
             user_id: rdm_user(tab_id_users)
         }, {
             wind: "",
-            temp: "ksdl",
-            city: "",
-            humidity: "20%",
+            temp: 30,
+            city: "Valentigney",
+            humidity: 20,
             user_id: rdm_user(tab_id_users)
         }]).end((err, res) => {
             expect(res).to.have.status(405)
@@ -169,7 +169,7 @@ describe("POST - /weathers", () => {
 
 describe("GET - /weather", () => {
     it("Chercher un weather valide. - S", (done) => {
-        chai.request(server).get('/weather').query({ fields: ["temp"], value: weathers[0].temp }).end((err, res) => {
+        chai.request(server).get('/weather').query({ fields: ["humidity"], value: weathers[0].humidity }).end((err, res) => {
             // console.log(err, res)
             res.should.have.status(200);
             done();
@@ -188,7 +188,7 @@ describe("GET - /weather", () => {
         });
     });
     it("Chercher un weather inexistant. - E", (done) => {
-        chai.request(server).get('/weather').query({ fields: ["wind"], value: "Setting inexistant" }).end((err, res) => {
+        chai.request(server).get('/weather').query({ fields: ["city"], value: "Weather inexistant" }).end((err, res) => {
             // console.log(res)
             res.should.have.status(404);
             done();
@@ -283,7 +283,7 @@ describe("PUT - /weather/:id", () => {
     });
     it("Modifier un weather avec un id invalide. - E", (done) => {
         chai.request(server).put(`/weather/123456789`).send({
-            price: 50
+            temp: 50
         }).end((err, res) => {
             expect(res).to.have.status(405);
             done();
@@ -291,7 +291,7 @@ describe("PUT - /weather/:id", () => {
     });
     it("Modifier un weather inexistant. - E", (done) => {
         chai.request(server).put(`/weather/60c72b2f4f1a4c3d88d9a1d9`).send({
-            temp: "Non inexistant"
+            wind: "Non inexistant"
         }).end((err, res) => {
             expect(res).to.have.status(404);
             done();
@@ -311,7 +311,7 @@ describe("PUT - /weather/:id", () => {
 describe("PUT - /weathers", () => {
     it("Modifier plusieurs weathers. - S", (done) => {
         chai.request(server).put('/weathers').query({ id: _.map(weathers, '_id') }).send({
-            temp: "°C", wind: "km/h"
+            temp: 30, wind: "km/h"
         })
             .end((err, res) => {
                 // console.log(res)
@@ -321,7 +321,7 @@ describe("PUT - /weathers", () => {
     })
     it("Modifier plusieurs weathers avec ID ivalide. -E", (done) => {
         chai.request(server).put('/weathers').query({ id: ["1234", "616546"] }).send({
-            temp: "°C"
+            temp: 30
         }, {
             wind: "km/h"
         })
@@ -332,7 +332,7 @@ describe("PUT - /weathers", () => {
     })
     it("Modifier des weathers inexistants. -E", (done) => {
         chai.request(server).put('/weathers').query({ id: ["6679773379a3a34adc0f05bf"] }).send({
-            wind: "°ppp"
+            wind: "mi/h"
         })
             .end((err, res) => {
                 res.should.have.status(404)
@@ -341,7 +341,7 @@ describe("PUT - /weathers", () => {
     })
     it("Modifier des weathers avec un champ vide. -E", (done) => {
         chai.request(server).put('/weathers').query({ id: _.map(weathers, '_id') }).send({
-            humidity: "50°",
+            humidity: 50,
             wind: ""
         })
             .end((err, res) => {

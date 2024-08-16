@@ -20,13 +20,13 @@ const mongoose = require('mongoose')
 //     require("./controllers/SettingController.test")
 // })
 
-describe("WeatherService", () => {
-    require("./services/WeatherService.test")
-})
-
-// describe("WeatherController", () => {
-//     require("./controllers/WeatherController.test")
+// describe("WeatherService", () => {
+//     require("./services/WeatherService.test")
 // })
+
+describe("WeatherController", () => {
+    require("./controllers/WeatherController.test")
+})
 
 describe("API - Mongo", () => {
     it("Vider les dbs. - S", () => {
