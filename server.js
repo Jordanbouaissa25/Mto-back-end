@@ -33,6 +33,7 @@ app.use(passport.session())
 const UserController = require("./controllers/UserController");
 const SettingController = require('./controllers/SettingController')
 const WeatherController = require('./controllers/WeatherController')
+const ApiController = require('./controllers/ApiController')
 
 const DatabaseMiddleware = require('./middlewares/database')
 const LoggerMiddleware = require('./middlewares/logger')
@@ -149,6 +150,36 @@ app.delete("/weather/:id", DatabaseMiddleware.checkConnexion, WeatherController.
 
 // Création de l'endpoint /weathers pour la suppression de plusieurs settings
 app.delete("/weathers", DatabaseMiddleware.checkConnexion, WeatherController.deleteManyWeathers);
+
+// Création de l'endpoint /api pour l'ajout d'un setting
+app.post("/api", DatabaseMiddleware.checkConnexion, ApiController.addOneApi);
+
+// Création de l'endpoint /apis pour l'ajout de plusieurs settings
+app.post("/apis", DatabaseMiddleware.checkConnexion, ApiController.addManyApis);
+
+// Création de l'endpoint /api/:id pour la récupération d'un setting par ID
+app.get("/api/:id", DatabaseMiddleware.checkConnexion, ApiController.findOneApiById);
+
+// Création de l'endpoint /api pour la récupération d'un setting
+app.get("/api", DatabaseMiddleware.checkConnexion, ApiController.findOneApi);
+
+// Création de l'endpoint /apis pour la récupération de plusieurs settings par ID
+app.get("/apis", DatabaseMiddleware.checkConnexion, ApiController.findManyApisById);
+
+// Création de l'endpoint /apis_by_filters pour chercher des settings
+app.get("/apis_by_filters", DatabaseMiddleware.checkConnexion, ApiController.findManyApis);
+
+// Création de l'endpoint /api/:id pour la modification d'un setting
+app.put("/api/:id", DatabaseMiddleware.checkConnexion, ApiController.updateOneApi);
+
+// Création de l'endpoint /apis pour la modification de plusieurs settings
+app.put("/apis", DatabaseMiddleware.checkConnexion, ApiController.updateManyApis);
+
+// Création de l'endpoint /api/:id pour la suppression d'un setting
+app.delete("/api/:id", DatabaseMiddleware.checkConnexion, ApiController.deleteOneApi);
+
+// Création de l'endpoint /apis pour la suppression de plusieurs settings
+app.delete("/apis", DatabaseMiddleware.checkConnexion, ApiController.deleteManyApis);
 
 // Démarrage de notre serveur sur le port choisi
 app.listen(Config.port, () => {

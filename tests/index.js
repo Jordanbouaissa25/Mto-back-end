@@ -4,28 +4,36 @@ require("../utils/database");
 
 const mongoose = require('mongoose')
 
-// describe("UserService", () => {
-//     require("./services/UserService.test");
-// });
+describe("UserService", () => {
+    require("./services/UserService.test");
+});
 
-// describe("UserController", () => {
-//     require("./controllers/UserController.test")
-// })
+describe("UserController", () => {
+    require("./controllers/UserController.test")
+})
 
-// describe("SettingService", () => {
-//     require('./services/SettingService.test')
-// })
+describe("SettingService", () => {
+    require('./services/SettingService.test')
+})
 
-// describe("SettingController", () => {
-//     require("./controllers/SettingController.test")
-// })
+describe("SettingController", () => {
+    require("./controllers/SettingController.test")
+})
 
-// describe("WeatherService", () => {
-//     require("./services/WeatherService.test")
-// })
+describe("WeatherService", () => {
+    require("./services/WeatherService.test")
+})
 
 describe("WeatherController", () => {
     require("./controllers/WeatherController.test")
+})
+
+describe("ApiService", () => {
+    require("./services/ApiService.test")
+})
+
+describe("ApiController", () => {
+    require("./controllers/ApiController.test")
 })
 
 describe("API - Mongo", () => {

@@ -8,7 +8,7 @@ const weatherSchema = new Schema({
     },
     user_id: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: false,
     },
     city: {
         type: String,
