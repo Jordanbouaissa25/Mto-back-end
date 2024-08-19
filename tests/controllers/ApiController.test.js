@@ -59,7 +59,7 @@ describe("POST - /api", () => {
     it("Ajouter un api. - S", (done) => {
         var e = {
             api_name: "Weather Api",
-            api_key: "6a8832a265f679d0530d8309fb51c880",
+            api_key: "91fbde8f0b5ad7adc0d2262673e3bd6c",
             endpoint_url: "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}",
             rate_limit: 40,
             last_fetched: 20 / 10 / 2022,
@@ -101,7 +101,7 @@ describe("POST - /apis", () => {
     it("Ajouter des apis. -S", (done) => {
         chai.request(server).post('/apis').send([{
             api_name: "Weather Api",
-            api_key: "6a8832a265f679d0530d8309fb51c880",
+            api_key: "91fbde8f0b5ad7adc0d2262673e3bd6c",
             endpoint_url: "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}",
             rate_limit: 40,
             last_fetched: 20 / 10 / 2028,
@@ -109,7 +109,7 @@ describe("POST - /apis", () => {
         },
         {
             api_name: "Weather Api",
-            api_key: "6a8832a265f679d0530d8309fb51c880",
+            api_key: "91fbde8f0b5ad7adc0d2262673e3bd6c",
             endpoint_url: "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}",
             rate_limit: 40,
             last_fetched: 20 / 10 / 2042,
@@ -143,14 +143,14 @@ describe("POST - /apis", () => {
     it("Ajouter des apis incorrect. (sans endpoint_url) - E", (done) => {
         chai.request(server).post('/apis').send([{
             api_name: "Weather Api",
-            api_key: "6a8832a265f679d0530d8309fb51c880",
+            api_key: "91fbde8f0b5ad7adc0d2262673e3bd6c",
             rate_limit: 40,
             last_fetched: 20 / 10 / 2022,
             user_id: rdm_user(tab_id_users)
         },
         {
             api_name: "Weather Api",
-            api_key: "6a8832a265f679d0530d8309fb51c880",
+            api_key: "91fbde8f0b5ad7adc0d2262673e3bd6c",
             rate_limit: 408,
             last_fetched: 20 / 10 / 2022,
             user_id: rdm_user(tab_id_users)
@@ -163,14 +163,14 @@ describe("POST - /apis", () => {
     it("Ajouter des apis incorrect. (Avec un champ vide) - E", (done) => {
         chai.request(server).post('/apis').send([{
             api_name: "",
-            api_key: "6a8832a265f679d0530d8309fb51c880",
+            api_key: "91fbde8f0b5ad7adc0d2262673e3bd6c",
             endpoint_url: "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}",
             rate_limit: 40,
             last_fetched: 20 / 10 / 2022,
             user_id: rdm_user(tab_id_users)
         }, {
             api_name: "",
-            api_key: "6a8832a265f679d0530d8309fb51c880",
+            api_key: "91fbde8f0b5ad7adc0d2262673e3bd6c",
             endpoint_url: "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}",
             rate_limit: 40,
             last_fetched: 20 / 10 / 2022,

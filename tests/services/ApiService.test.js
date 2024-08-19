@@ -56,7 +56,7 @@ describe("addOneApi", () => {
     it("Api correct. - S", (done) => {
         var api = {
             api_name: "Weather Api",
-            api_key: "6a8832a265f679d0530d8309fb51c880",
+            api_key: "91fbde8f0b5ad7adc0d2262673e3bd6c",
             endpoint_url: "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}",
             rate_limit: 20,
             last_fetched: 20 / 10 / 2020,
@@ -74,7 +74,7 @@ describe("addOneApi", () => {
     it("Api incorrect. (Sans endpoint_url) - E", () => {
         var api_no_valid = {
             api_name: "Weather Api",
-            api_key: "6a8832a265f679d0530d8309fb51c880",
+            api_key: "91fbde8f0b5ad7adc0d2262673e3bd6c",
             rate_limit: 20,
             last_fetched: 20 / 10 / 2020,
             user_id: rdm_user(tab_id_users)
@@ -121,7 +121,7 @@ describe("addManyApis", () => {
         var apis_tab = [
             {
                 api_name: "Weather Api",
-                api_key: "6a8832a265f679d0530d8309fb51c880",
+                api_key: "91fbde8f0b5ad7adc0d2262673e3bd6c",
                 endpoint_url: "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}",
                 rate_limit: 40,
                 last_fetched: 20 / 10 / 2022,
@@ -129,7 +129,7 @@ describe("addManyApis", () => {
             },
             {
                 api_name: "Weather Api",
-                api_key: "6a8832a265f679d0530d8309fb51c880",
+                api_key: "6a8832a2691fbde8f0b5ad7adc0d2262673e3bd6cf679d0530d8309fb51c880",
                 endpoint_url: "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}",
                 rate_limit: 205,
                 last_fetched: 20 / 10 / 2029,
@@ -149,8 +149,8 @@ describe("addManyApis", () => {
 describe("findOneApi", () => {
     it("Chercher un Api par les champs sélectionné. - S", (done) => {
         ApiService.findOneApi(["api_name"], apis[0].api_name, null, function (err, value) {
-            console.log(apis[0])
-            console.log(err, value)
+            // console.log(apis[0])
+            // console.log(err, value)
             expect(value).to.haveOwnProperty('api_name');
             done();
         });
