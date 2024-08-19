@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const weatherSchema = new Schema({
     data_id: {
-        type: Schema.Types.ObjectId,
+        type: Number,
         required: false
     },
     user_id: {
@@ -12,7 +12,8 @@ const weatherSchema = new Schema({
     },
     city: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     temp: {
         type: Number,

@@ -1,4 +1,6 @@
 const WeatherSchema = require('../schemas/Weather');
+const http = require('../utils/http').http
+const appid = require('../config').appid
 const _ = require('lodash');
 const async = require('async');
 const mongoose = require('mongoose');
@@ -8,8 +10,17 @@ var Weather = mongoose.model('Weather', WeatherSchema)
 
 Weather.createIndexes();
 
-module.exports.addOneWeather = async function (weather, options, callback) {
+module.exports.addOneWeather = async function (city, user_id, options, callback) {
     try {
+        const responseOfApi = await http.get(`?q=${city}&appid=${appid}`)
+        const weather = {
+            data_id: responseOfApi.data.id,
+            user_id: user_id,
+            city: city,
+            temp: responseOfApi.data.main.temp,
+            humidity: responseOfApi.data.main.humidity,
+            wind: responseOfApi.data.wind.speed,
+        }
         var new_weather = new Weather(weather);
         var errors = new_weather.validateSync();
         if (errors) {
@@ -32,6 +43,7 @@ module.exports.addOneWeather = async function (weather, options, callback) {
             callback(null, new_weather.toObject());
         }
     } catch (error) {
+        // console.log(error)
         if (error.code === 11000) { // Erreur de duplicité
             var field = Object.keys(error.keyValue)[0];
             var err = {
@@ -42,6 +54,12 @@ module.exports.addOneWeather = async function (weather, options, callback) {
             };
             callback(err);
         } else {
+            if (error.response.data.cod === "404") {
+                return callback({ msg: "ville renseignée n'existe pas", type_error: "no-found" })
+            }
+            if (error.response.data.cod === "400") {
+                return callback({ msg: "informations renseignées non valides", type_error: "no-valid" })
+            }
             callback(error); // Autres erreurs
         }
     }
@@ -49,158 +67,184 @@ module.exports.addOneWeather = async function (weather, options, callback) {
 
 
 
-module.exports.addManyWeathers = async function (weathers, callback) {
-    var errors = [];
+module.exports.addManyWeathers = async function (cities, user_id, options, callback) {
+    const weathers = [];
+    const errors = [];
 
-    // Vérifier les erreurs de validation
-    for (var i = 0; i < weathers.length; i++) {
-        var weather = weathers[i];
-        var new_weather = new Weather(weather);
-        var error = new_weather.validateSync();
-        if (error) {
-            error = error['errors'];
-            var text = Object.keys(error).map((e) => {
-                return error[e]['properties']['message'];
-            }).join(' ');
-            var fields = _.transform(Object.keys(error), function (result, value) {
-                result[value] = error[value]['properties']['message'];
-            }, {});
-            errors.push({
-                msg: text,
-                fields_with_error: Object.keys(error),
-                fields: fields,
-                index: i,
-                type_error: "validator"
-            });
-        }
-    }
-    if (errors.length > 0) {
-        callback(errors);
-    } else {
+    for (const city of cities) {
         try {
-            // Tenter d'insérer les utilisateurs
-            //console.log(weathers)
-            const data = await Weather.insertMany(weathers, { ordered: false });
-            // console.log(data)
-            callback(null, data);
-        } catch (error) {
-            if (error.code === 11000) { // Erreur de duplicité
-                const duplicateErrors = error.writeErrors.map(err => {
-                    // const field = Object.keys(err.keyValue)[0];
-                    const field = err.err.errmsg.split(" dup key: { ")[1].split(':')[0].trim();
-                    return {
-                        msg: `Duplicate key error: ${field} must be unique.`,
-                        fields_with_error: [field],
-                        fields: { [field]: `The ${field} is already taken.` },
-                        index: err.index,
-                        type_error: "duplicate"
-                    };
+            const responseOfApi = await http.get(`?q=${city}&appid=${appid}`);
+            const weather = {
+                data_id: responseOfApi.data.id,
+                user_id: user_id,
+                city: city,
+                temp: responseOfApi.data.main.temp,
+                humidity: responseOfApi.data.main.humidity,
+                wind: responseOfApi.data.wind.speed,
+            };
+
+            const new_weather = new Weather(weather);
+            const validationErrors = new_weather.validateSync();
+
+            if (validationErrors) {
+                const errorDetails = validationErrors['errors'];
+                const errorMsg = Object.keys(errorDetails).map((e) => {
+                    return errorDetails[e]['properties']['message'];
+                }).join(' ');
+
+                const fields = _.transform(Object.keys(errorDetails), function (result, value) {
+                    result[value] = errorDetails[value]['properties']['message'];
+                }, {});
+
+                errors.push({
+                    msg: errorMsg,
+                    fields_with_error: Object.keys(errorDetails),
+                    fields: fields,
+                    city: city,
+                    type_error: "validator"
                 });
-                callback(duplicateErrors);
             } else {
-                callback(error); // Autres erreurs
+                weathers.push(new_weather);
+            }
+        } catch (error) {
+            // console.log(`Error processing city ${city}:`, error);
+            if (error.code === 11000) { // Duplicate key error
+                const field = Object.keys(error.keyValue)[0];
+                errors.push({
+                    msg: `Duplicate key error: ${field} must be unique.`,
+                    fields_with_error: [field],
+                    fields: { [field]: `The ${field} is already taken.` },
+                    city: city,
+                    type_error: "duplicate"
+                });
+            } else if (error.response && error.response.data.cod === "404") {
+                errors.push({ msg: "ville renseignée n'existe pas", type_error: "no-found", city: city });
+            } else if (error.response && error.response.data.cod === "400") {
+                errors.push({ msg: "informations renseignées non valides", type_error: "no-valid", city: city });
+            } else {
+                errors.push({ msg: "Une erreur inattendue est survenue", type_error: "unknown", city: city, error });
             }
         }
     }
-};
 
+    if (errors.length > 0) {
+        callback({ msg: "Certaines villes n'ont pas été ajoutées", errors, type_error: "multi" });
+        return;
+    }
 
-
-module.exports.findOneWeatherById = function (weather_id, options, callback) {
-    var opts = { populate: options && options.populate ? ["user_id"] : [] }
-    // console.log('Received weather_id:', weather_id); // Debugging log
-    if (weather_id && mongoose.isValidObjectId(weather_id)) {
-        Weather.findById(weather_id, null, opts)
-            .then((value) => {
-                //   console.log('Found value:', value); // Debugging log
-                if (value) {
-                    callback(null, value.toObject());
-                } else {
-                    callback({ msg: "Aucun weather trouvé.", type_error: "no-found" });
-                }
-            })
-            .catch((err) => {
-                // console.error('Error querying database:', err); // Debugging log
-                callback({ msg: "Impossible de chercher l'élément.", type_error: "error-mongo" });
+    try {
+        const data = await Weather.insertMany(weathers, { ordered: false });
+        callback(null, data);
+    } catch (error) {
+        if (error.code === 11000) { // Duplicate key error during batch insert
+            const duplicateErrors = error.writeErrors.map(err => {
+                const field = err.err.errmsg.split(" dup key: { ")[1].split(':')[0].trim();
+                return {
+                    msg: `Duplicate key error: ${field} must be unique.`,
+                    fields_with_error: [field],
+                    fields: { [field]: `The ${field} is already taken.` },
+                    index: err.index,
+                    type_error: "duplicate"
+                };
             });
-    } else {
-        console.error('Invalid ObjectId:', weather_id); // Debugging log
-        callback({ msg: "ObjectId non conforme.", type_error: 'no-valid' });
+            callback({ msg: "Certaines villes n'ont pas été ajoutées", errors: duplicateErrors, type_error: "multi" });
+        } else {
+            callback(error); // Other errors
+        }
     }
 };
+
+module.exports.findOneWeatherById = async function (weather_id, options, callback) {
+    try {
+        // Check if the provided weather_id is a valid MongoDB ObjectId
+        if (!mongoose.isValidObjectId(weather_id)) {
+            return callback({
+                msg: "ObjectId non conforme.",
+                type_error: 'no-valid'
+            });
+        }
+
+        // Define options for the query, including population of related fields if specified
+        const opts = { populate: options && options.populate ? ["user_id"] : [] };
+
+        // Perform the query to find the weather by its ID
+        const weather = await Weather.findById(weather_id, null, opts).exec();
+
+        // Handle cases where no matching weather data is found
+        if (!weather) {
+            return callback({
+                msg: "Aucun weather trouvé.",
+                type_error: "no-found"
+            });
+        }
+
+        // Return the found weather data
+        callback(null, weather.toObject());
+    } catch (error) {
+        // Handle potential errors during the MongoDB query
+        console.error('Error querying database:', error); // Debugging log
+        callback({
+            msg: "Impossible de chercher l'élément.",
+            type_error: "error-mongo"
+        });
+    }
+};
+
 
 
 module.exports.findOneWeather = function (tab_field, value, option, callback) {
-    var opt = { populate: option && option.populate ? ["user_id"] : [] }
-    var field_unique = ["humidity", "city"]
-    if (tab_field && Array.isArray(tab_field) && value
-        && _.filter(tab_field, (e) => {
-            return field_unique.indexOf(e) == -1
-        }).length == 0) {
-        var obj_find = []
-        _.forEach(tab_field, (e) => {
-            obj_find.push({ [e]: value })
-        })
-        Weather.findOne({ $or: obj_find }, null, opt).then((value) => {
-            if (value)
-                callback(null, value.toObject())
-            else {
-                callback({ msg: 'Weather non trouvé.', type_error: 'no-found' })
-            }
-        }).catch((err) => {
-            callback({ msg: "Error interne mongo", type_error: "error-mongo" })
-        })
-    }
-    else {
-        let msg = ""
-        if (!tab_field || !Array.isArray(tab_field)) {
-            msg += "Les champs de recherche sont incorrecte."
-        }
-        if (!value) {
-            msg += msg ? " Et la valeur de recherche est vide." : "La valeur de recherche est vide."
-        }
-        if (_.filter(tab_field, (e) => { return field_unique.indexOf(e) == -1 }).length > 0) {
-            var field_not_authorized = _.filter(tab_field, (e) => { return field_unique.indexOf(e) == -1 })
-            msg += msg ? ` Et (${field_not_authorized.join(',')}) ne sont pas des champs autorisés.` :
-                `Les champs (${field_not_authorized.join(',')}) ne sont pas des champs de recherche autorisé`
-            callback({ msg: msg, type_error: "no-valid", field_not_authorized: field_not_authorized })
-        } else {
-            callback({ msg: msg, type_error: "no-valid" })
-        }
-    }
-}
+    const opt = { populate: option && option.populate ? ["user_id"] : [] };
+    const field_unique = ["humidity", "city"];
 
-module.exports.findManyWeathersById = function (weathers_id, options, callback) {
-    var opts = { populate: options && options.populate ? ["user_id"] : [], lean: true }
-    if (weathers_id && Array.isArray(weathers_id) && weathers_id.length > 0 && weathers_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == weathers_id.length) {
-        weathers_id = weathers_id.map((e) => { return new ObjectId(e) })
-        Weather.find({ _id: weathers_id }, null, opts).then((value) => {
-            try {
-                if (value && Array.isArray(value) && value.length != 0) {
-                    callback(null, value);
+    // Validation des champs
+    if (
+        tab_field &&
+        Array.isArray(tab_field) &&
+        value &&
+        _.filter(tab_field, (e) => field_unique.indexOf(e) === -1).length === 0
+    ) {
+        const obj_find = _.map(tab_field, (e) => ({ [e]: value }));
+
+        // Requête à MongoDB
+        Weather.findOne({ $or: obj_find }, null, opt)
+            .then((result) => {
+                if (result) {
+                    callback(null, result.toObject());
                 } else {
-                    callback({ msg: "Aucun weather trouvé.", type_error: "no-found" });
+                    callback({ msg: 'Weather non trouvé.', type_error: 'no-found' });
                 }
-            }
-            catch (e) {
+            })
+            .catch((err) => {
+                callback({ msg: "Erreur interne MongoDB", type_error: "error-mongo" });
+            });
+    } else {
+        // Construction du message d'erreur
+        let msg = "";
 
-            }
-        }).catch((err) => {
-            callback({ msg: "Impossible de chercher l'élément.", type_error: "error-mongo" });
-        });
-    }
-    else if (weathers_id && Array.isArray(weathers_id) && weathers_id.length > 0 && weathers_id.filter((e) => { return mongoose.isValidObjectId(e) }).length != weathers_id.length) {
-        callback({ msg: "Tableau non conforme plusieurs éléments ne sont pas des ObjectId.", type_error: 'no-valid', fields: weathers_id.filter((e) => { return !mongoose.isValidObjectId(e) }) });
-    }
-    else if (weathers_id && !Array.isArray(weathers_id)) {
-        callback({ msg: "L'argement n'est pas un tableau.", type_error: 'no-valid' });
+        if (!tab_field || !Array.isArray(tab_field)) {
+            msg += "Les champs de recherche sont incorrects.";
+        }
 
-    }
-    else {
-        callback({ msg: "Tableau non conforme.", type_error: 'no-valid' });
-    }
-}
+        if (!value) {
+            msg += msg ? " Et la valeur de recherche est vide." : "La valeur de recherche est vide.";
+        }
 
+        const field_not_authorized = _.filter(tab_field, (e) => field_unique.indexOf(e) === -1);
+        if (field_not_authorized.length > 0) {
+            msg += msg
+                ? ` Et (${field_not_authorized.join(',')}) ne sont pas des champs autorisés.`
+                : `Les champs (${field_not_authorized.join(',')}) ne sont pas des champs de recherche autorisés.`;
+
+            callback({
+                msg: msg,
+                type_error: "no-valid",
+                field_not_authorized: field_not_authorized,
+            });
+        } else {
+            callback({ msg: msg, type_error: "no-valid" });
+        }
+    }
+};
 
 module.exports.findManyWeathers = function (search, page, limit, options, callback) {
     page = !page ? 1 : parseInt(page)

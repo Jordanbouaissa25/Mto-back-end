@@ -54,15 +54,8 @@ describe("addOneWeather", () => {
         })
     })
     it("Weather correct. - S", (done) => {
-        var weather = {
-            temp: 32,
-            wind: "km/h",
-            city: "Bali",
-            humidity: 22,
-            user_id: rdm_user(tab_id_users)
-        };
-        WeatherService.addOneWeather(weather, null, function (err, value) {
-            // console.log(err, value)
+        WeatherService.addOneWeather("Besançon", tab_id_users[0], null, function (err, value) {
+            // console.log(value)
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
             id_weather_valid = value._id;
@@ -70,129 +63,135 @@ describe("addOneWeather", () => {
             done()
         });
     });
-
-    it("Weather incorrect. (Sans city) - E", () => {
-        var weather_no_valid = {
-            temp: 30,
-            wind: "kmp/h",
-            humidity: 29,
-            user_id: rdm_user(tab_id_users)
-        };
-        WeatherService.addOneWeather(weather_no_valid, function (err, value) {
+    it("Weather incorrect. (Avec une city inexistante) - E", (done) => {
+        WeatherService.addOneWeather("dflivjlfvjdl", tab_id_users[0], null, function (err, value) {
             expect(err).to.haveOwnProperty("msg");
-            expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
-            expect(err).to.haveOwnProperty("fields");
-            expect(err["fields"]).to.haveOwnProperty("city");
-            expect(err["fields"]["city"]).to.equal(
-                "Path `city` is required."
-            );
+            expect(err).to.haveOwnProperty('type_error')
+            expect(err['type_error']).to.be.equal('no-found')
+            done()
+        });
+    });
+    it("Weather incorrect. (Ville déjà existante) - E", (done) => {
+        WeatherService.addOneWeather("Besançon", tab_id_users[0], null, function (err, value) {
+            expect(err).to.haveOwnProperty("msg");
+            expect(err).to.haveOwnProperty('type_error')
+            expect(err['type_error']).to.be.equal('duplicate')
+            done();
         });
     });
 });
 
 describe("addManyWeathers", () => {
-    it("weathers à ajouter, non valide. - E", (done) => {
-        var weathers_tab_error = [
-            {
-                temp: 30,
-                wind: "kdsokdm/h",
-                city: "dlkjjs",
-                humidity: 20,
-                user_id: rdm_user(tab_id_users)
-            },
-            {
-                temp: 25,
-                wind: "kxkockm/h",
-                city: "Montbélcskl,siard",
-                humidity: 20,
-                user_id: rdm_user(tab_id_users)
-            },
-        ];
+    const mockCities = ["Paris", "InvalidCity"]; // Example cities
+    const user_id = tab_id_users[0]; // Mock user_id
 
-        WeatherService.addManyWeathers(weathers_tab_error, function (err, value) {
+    it("Ajouter des données météorologiques valides - S", (done) => {
+        WeatherService.addManyWeathers(mockCities.slice(0, 1), user_id, {}, function (err, value) {
+            if (err) {
+                done(err); // Fail the test if an unexpected error occurs
+            } else {
+                tab_id_weathers = _.map(value, "_id");
+                weathers = [...value, ...weathers];
+                expect(value).to.be.an("array").that.has.lengthOf(1); // Adjust the expected length according to your mock data
+                done();
+            }
+        });
+    });
+
+    it("Gérer correctement les données de ville non correct - E", (done) => {
+        WeatherService.addManyWeathers(mockCities.slice(1), user_id, {}, function (err, value) {
+            expect(err).to.haveOwnProperty("msg");
+            expect(err).to.haveOwnProperty('type_error');
+            expect(err['type_error']).to.be.equal('multi');
+            expect(err.errors).to.be.an("array").that.has.lengthOf(1);
+            expect(err.errors[0]).to.haveOwnProperty('msg');
+            expect(err.errors[0].type_error).to.be.oneOf(['no-found', 'no-valid']);
             done();
         });
     });
 
-    it("Weathers à ajouter, valide. - S", (done) => {
-        var weathers_tab = [
-            {
-                temp: 40,
-                wind: "km/h",
-                city: "Hurghada",
-                humidity: 50,
-                user_id: rdm_user(tab_id_users)
-            },
-            {
-                temp: 25,
-                wind: "mi/h",
-                city: "Bali",
-                humidity: 70,
-                user_id: rdm_user(tab_id_users)
-            },
-        ];
-
-        WeatherService.addManyWeathers(weathers_tab, function (err, value) {
-            tab_id_weathers = _.map(value, "_id");
-            weathers = [...value, ...weathers];
-            //  console.log(value)
-            expect(value).lengthOf(2);
+    it("Gérer les villes non valid - E", (done) => {
+        WeatherService.addManyWeathers(mockCities, user_id, {}, function (err, value) {
+            expect(err).to.haveOwnProperty("msg");
+            expect(err).to.haveOwnProperty('type_error');
+            expect(err['type_error']).to.be.equal('multi');
+            expect(err.errors).to.be.an("array").that.has.lengthOf(1); // Adjust based on mockCities
             done();
         });
     });
 });
 
-describe("findOneWeather", () => {
-    it("Chercher un Weather par les champs sélectionné. - S", (done) => {
-        WeatherService.findOneWeather(["city"], weathers[0].city, null, function (err, value) {
-            // console.log(weathers[0])
-            // console.log(err, value)
-            expect(value).to.haveOwnProperty('humidity');
-            done();
-        });
-    });
-    it("Chercher un Weather avec un champ non autorisé. - E", (done) => {
-        WeatherService.findOneWeather(["temp", "wind"], weathers[0].city, null, function (err, value) {
-            expect(err).to.haveOwnProperty('type_error');
-            done();
-        });
-    });
-
-    it("Chercher un Weather sans tableau de champ. - E", (done) => {
-        WeatherService.findOneWeather("city", weathers[0].city, null, function (err, value) {
-            expect(err).to.haveOwnProperty('type_error');
-            done();
-        });
-    });
-
-    it("Chercher un Weather inexistant. - E", (done) => {
-        WeatherService.findOneWeather(["city"], "non-existent-city", null, function (err, value) {
-            expect(err).to.haveOwnProperty('type_error');
-            done();
-        });
-    });
-});
 
 describe("findOneWeatherById", () => {
     it("Chercher un weather existant correct. - S", (done) => {
         WeatherService.findOneWeatherById(id_weather_valid, null, function (err, value) {
+            console.log(err, value)
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
             expect(value).to.haveOwnProperty("wind");
+            expect(err).to.be.null; // Ensures no error is returned for a valid ID
             done();
         });
     });
 
-
-    it("Chercher un Weather non-existant correct. - E", (done) => {
-        WeatherService.findOneWeatherById("100", null, function (err, value) {
+    it("Chercher un Weather avec ObjectId non valide. - E", (done) => {
+        WeatherService.findOneWeatherById("invalidObjectId", null, function (err, value) {
+            // console.log(err, value)
             expect(err).to.haveOwnProperty("msg");
             expect(err).to.haveOwnProperty("type_error");
             expect(err["type_error"]).to.equal("no-valid");
+            expect(value).to.be.undefined;
+            done();
+        });
+    });
+
+    it("Chercher un Weather non-existant correct. - E", (done) => {
+        WeatherService.findOneWeatherById("64cbf7b3f392b6d70ec5b6f2", null, function (err, value) {
+            // console.log(err, value)
+            expect(err).to.haveOwnProperty("msg");
+            expect(err).to.haveOwnProperty("type_error");
+            expect(err["type_error"]).to.equal("no-found");
             done();
         });
     });
 });
+
+
+describe("findOneWeather", () => {
+    it("Cherche un weather existant avec des champs valides. - S", (done) => {
+        WeatherService.findOneWeather(["city"], "Paris", null, (err, value) => {
+            expect(err).to.be.null;
+            expect(value).to.be.an("object");
+            expect(value).to.have.property("city", "Paris");
+            expect(value).to.have.property("humidity");
+            done();
+        });
+    });
+
+    it("Cherche un weather avec des champs non autorisés. - E", (done) => {
+        WeatherService.findOneWeather(["invalidField"], "Paris", null, (err, value) => {
+            expect(err).to.have.property("msg")
+            expect(err).to.have.property("type_error", "no-valid");
+            done();
+        });
+    });
+
+    it("Cherche un weather avec une valeur vide. - E", (done) => {
+        WeatherService.findOneWeather(["city"], "", null, (err, value) => {
+            expect(err).to.have.property("msg")
+            expect(err).to.have.property("type_error", "no-valid");
+            done();
+        });
+    });
+
+    it("Cherche un weather avec des champs et valeurs valides mais inexistants. - E", (done) => {
+        WeatherService.findOneWeather(["city"], "Inexistante", null, (err, value) => {
+            expect(err).to.have.property("msg", "Weather non trouvé.");
+            expect(err).to.have.property("type_error", "no-found");
+            done();
+        });
+    });
+})
 
 describe("findManyweathers", () => {
     it("Retourne 2 weathers. - S", (done) => {
@@ -212,15 +211,6 @@ describe("findManyweathers", () => {
             expect(err).to.haveOwnProperty("type_error");
             expect(err["type_error"]).to.be.equal("no-valid");
             expect(value).to.be.undefined;
-            done();
-        });
-    });
-});
-
-describe("findManyweathersById", () => {
-    it("Chercher des weathers existants correct. - S", (done) => {
-        WeatherService.findManyWeathersById(tab_id_weathers, null, function (err, value) {
-            expect(value).lengthOf(2);
             done();
         });
     });
@@ -384,6 +374,4 @@ describe("deleteManyweathers", () => {
             done()
         })
     })
-});
-
-
+})
