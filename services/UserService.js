@@ -117,6 +117,7 @@ module.exports.loginUser = async function (email, password, options, callback) {
     else {
       if (bcrypt.compareSync(password, value.password)) {
         var token = TokenUtils.createToken({ _id: value._id }, null)
+
         module.exports.updateOneUser(value._id, { token: token }, null, (err, value) => {
           callback(null, { ...value, token: token })
         })
@@ -127,6 +128,7 @@ module.exports.loginUser = async function (email, password, options, callback) {
     }
   })
 }
+
 module.exports.findOneUserById = function (user_id, options, callback) {
   if (user_id && mongoose.isValidObjectId(user_id)) {
     User.findById(user_id).then((value) => {

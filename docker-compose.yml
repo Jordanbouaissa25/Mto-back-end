@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  api:
+    build: "."
+    container_name: node-api
+    environment:
+      - PORT=3000
+      - SECRET_KEY=MY_SECRET_KEY_HASH
+      - SECRET_COOKIE=COOKIE
+      - URL_DATABASE=mongodb://mongodb:27017
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - mongodb
+    restart: always
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    volumes:
+    - ./mongo-data:/data/db
+    networks:
+      - app-network
+    expose:
+      - "27017"
+networks:
+  app-network:
+    driver: bridge
+volumes:
+    mongo-data:

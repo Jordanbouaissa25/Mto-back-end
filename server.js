@@ -91,95 +91,95 @@ app.delete("/users", DatabaseMiddleware.checkConnexion, passport.authenticate('j
 // app.post('/login', DatabaseMiddleware.checkConnexion, SettingController.loginUser)
 
 // Création de l'endpoint /setting pour l'ajout d'un setting
-app.post("/setting", DatabaseMiddleware.checkConnexion, SettingController.addOneSetting);
+app.post("/setting", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), SettingController.addOneSetting);
 
 // Création de l'endpoint /settings pour l'ajout de plusieurs settings
-app.post("/settings", DatabaseMiddleware.checkConnexion, SettingController.addManySettings);
+app.post("/settings", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), SettingController.addManySettings);
 
 // Création de l'endpoint /setting/:id pour la récupération d'un setting par ID
-app.get("/setting/:id", DatabaseMiddleware.checkConnexion, SettingController.findOneSettingById);
+app.get("/setting/:id", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), SettingController.findOneSettingById);
 
 // Création de l'endpoint /setting pour la récupération d'un setting
-app.get("/setting", DatabaseMiddleware.checkConnexion, SettingController.findOneSetting);
+app.get("/setting", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), SettingController.findOneSetting);
 
 // Création de l'endpoint /settings pour la récupération de plusieurs settings par ID
-app.get("/settings", DatabaseMiddleware.checkConnexion, SettingController.findManySettingsById);
+app.get("/settings", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), SettingController.findManySettingsById);
 
 // Création de l'endpoint /settings_by_filters pour chercher des settings
-app.get("/settings_by_filters", DatabaseMiddleware.checkConnexion, SettingController.findManySettings);
+app.get("/settings_by_filters", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), SettingController.findManySettings);
 
 // Création de l'endpoint /setting/:id pour la modification d'un setting
-app.put("/setting/:id", DatabaseMiddleware.checkConnexion, SettingController.updateOneSetting);
+app.put("/setting/:id", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), SettingController.updateOneSetting);
 
 // Création de l'endpoint /settings pour la modification de plusieurs settings
-app.put("/settings", DatabaseMiddleware.checkConnexion, SettingController.updateManySettings);
+app.put("/settings", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), SettingController.updateManySettings);
 
 // Création de l'endpoint /setting/:id pour la suppression d'un setting
-app.delete("/setting/:id", DatabaseMiddleware.checkConnexion, SettingController.deleteOneSetting);
+app.delete("/setting/:id", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), SettingController.deleteOneSetting);
 
 // Création de l'endpoint /settings pour la suppression de plusieurs settings
-app.delete("/settings", DatabaseMiddleware.checkConnexion, SettingController.deleteManySettings);
+app.delete("/settings", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), SettingController.deleteManySettings);
 
 
 // Création de l'endpoint /weather pour l'ajout d'un setting
-app.post("/weather", DatabaseMiddleware.checkConnexion, WeatherController.addOneWeather);
+app.post("/weather", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), WeatherController.addOneWeather);
 
 // Création de l'endpoint /weathers pour l'ajout de plusieurs settings
-app.post("/weathers", DatabaseMiddleware.checkConnexion, WeatherController.addManyWeathers);
+app.post("/weathers", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), WeatherController.addManyWeathers);
 
 // Création de l'endpoint /weather/:id pour la récupération d'un setting par ID
-app.get("/weather/:id", DatabaseMiddleware.checkConnexion, WeatherController.findOneWeatherById);
+app.get("/weather/:id", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), WeatherController.findOneWeatherById);
 
 // Création de l'endpoint /weather pour la récupération d'un setting
-app.get("/weather", DatabaseMiddleware.checkConnexion, WeatherController.findOneWeather);
+app.get("/weather", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), WeatherController.findOneWeather);
 
 // Création de l'endpoint /weathers pour la récupération de plusieurs settings par ID
-app.get("/weathers", DatabaseMiddleware.checkConnexion, WeatherController.findManyWeathersById);
+app.get("/weathers", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), WeatherController.findManyWeathersById);
 
 // Création de l'endpoint /weathers_by_filters pour chercher des settings
-app.get("/weathers_by_filters", DatabaseMiddleware.checkConnexion, WeatherController.findManyWeathers);
+app.get("/weathers_by_filters", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), WeatherController.findManyWeathers);
 
 // Création de l'endpoint /weather/:id pour la modification d'un setting
-app.put("/weather/:id", DatabaseMiddleware.checkConnexion, WeatherController.updateOneWeather);
+app.put("/weather/:id", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), WeatherController.updateOneWeather);
 
 // Création de l'endpoint /weathers pour la modification de plusieurs settings
-app.put("/weathers", DatabaseMiddleware.checkConnexion, WeatherController.updateManyWeathers);
+app.put("/weathers", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), WeatherController.updateManyWeathers);
 
 // Création de l'endpoint /weather/:id pour la suppression d'un setting
-app.delete("/weather/:id", DatabaseMiddleware.checkConnexion, WeatherController.deleteOneWeather);
+app.delete("/weather/:id", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), WeatherController.deleteOneWeather);
 
 // Création de l'endpoint /weathers pour la suppression de plusieurs settings
-app.delete("/weathers", DatabaseMiddleware.checkConnexion, WeatherController.deleteManyWeathers);
+app.delete("/weathers", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), WeatherController.deleteManyWeathers);
 
 // Création de l'endpoint /api pour l'ajout d'un setting
-app.post("/api", DatabaseMiddleware.checkConnexion, ApiController.addOneApi);
+app.post("/api", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), ApiController.addOneApi);
 
 // Création de l'endpoint /apis pour l'ajout de plusieurs settings
-app.post("/apis", DatabaseMiddleware.checkConnexion, ApiController.addManyApis);
+app.post("/apis", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), ApiController.addManyApis);
 
 // Création de l'endpoint /api/:id pour la récupération d'un setting par ID
-app.get("/api/:id", DatabaseMiddleware.checkConnexion, ApiController.findOneApiById);
+app.get("/api/:id", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), ApiController.findOneApiById);
 
 // Création de l'endpoint /api pour la récupération d'un setting
-app.get("/api", DatabaseMiddleware.checkConnexion, ApiController.findOneApi);
+app.get("/api", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), ApiController.findOneApi);
 
 // Création de l'endpoint /apis pour la récupération de plusieurs settings par ID
-app.get("/apis", DatabaseMiddleware.checkConnexion, ApiController.findManyApisById);
+app.get("/apis", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), ApiController.findManyApisById);
 
 // Création de l'endpoint /apis_by_filters pour chercher des settings
-app.get("/apis_by_filters", DatabaseMiddleware.checkConnexion, ApiController.findManyApis);
+app.get("/apis_by_filters", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), ApiController.findManyApis);
 
 // Création de l'endpoint /api/:id pour la modification d'un setting
-app.put("/api/:id", DatabaseMiddleware.checkConnexion, ApiController.updateOneApi);
+app.put("/api/:id", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), ApiController.updateOneApi);
 
 // Création de l'endpoint /apis pour la modification de plusieurs settings
-app.put("/apis", DatabaseMiddleware.checkConnexion, ApiController.updateManyApis);
+app.put("/apis", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), ApiController.updateManyApis);
 
 // Création de l'endpoint /api/:id pour la suppression d'un setting
-app.delete("/api/:id", DatabaseMiddleware.checkConnexion, ApiController.deleteOneApi);
+app.delete("/api/:id", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), ApiController.deleteOneApi);
 
 // Création de l'endpoint /apis pour la suppression de plusieurs settings
-app.delete("/apis", DatabaseMiddleware.checkConnexion, ApiController.deleteManyApis);
+app.delete("/apis", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), ApiController.deleteManyApis);
 
 // Démarrage de notre serveur sur le port choisi
 app.listen(Config.port, () => {

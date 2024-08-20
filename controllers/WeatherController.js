@@ -1,15 +1,16 @@
 const WeatherService = require('../services/WeatherService');
 const LoggerHttp = require('../utils/logger').http
 
+
 // La fonction permet d'ajouter un Weather.
 module.exports.addOneWeather = function (req, res) {
     req.log.info("Création d'un Weather");
-    WeatherService.addOneWeather(req.body, null, function (err, value) {
+    WeatherService.addOneWeather(req.user._id, req.query.city, null, function (err, value) {
 
         if (err && err.type_error == "no-found") {
             res.statusCode = 404;
             res.send(err);
-        } else if (err && err.type_error == "validator") {
+        } else if (err && err.type_error == "no-valid") {
             res.statusCode = 405;
             res.send(err);
         } else if (err && err.type_error == "duplicate") {
@@ -26,9 +27,18 @@ module.exports.addOneWeather = function (req, res) {
 module.exports.addManyWeathers = function (req, res) {
     req.log.info("Création de plusieurs Weathers");
     WeatherService.addManyWeathers(req.body, function (err, value) {
-        if (err) {
+        if (err && err.type.error == "validator") {
             res.statusCode = 405;
             res.send(err);
+        } else if (err && err.type_error == "duplicate") {
+            res.statusCode = 405;
+            res.send(err)
+        } else if (err && err.type_error == "no-found") {
+            res.statusCode = 404;
+            res.send(err)
+        } else if (err && err.type_error == "no-valid") {
+            res.statusCode = 405;
+            res.send(err)
         } else {
             res.statusCode = 201;
             res.send(value);

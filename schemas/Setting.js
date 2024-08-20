@@ -15,12 +15,12 @@ const settingSchema = new Schema({
     setting_temperature: {
         type: String,
         enum: ["°C", "°F"],
-        required: false
+        required: true
     },
     setting_wind: {
         type: String,
         enum: ["km/h", "mi/h"],
-        required: false
+        required: true
     },
     city: {
         type: String,

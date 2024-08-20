@@ -125,7 +125,7 @@ describe("addManyWeathers", () => {
 describe("findOneWeatherById", () => {
     it("Chercher un weather existant correct. - S", (done) => {
         WeatherService.findOneWeatherById(id_weather_valid, null, function (err, value) {
-            console.log(err, value)
+            // console.log(err, value)
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
             expect(value).to.haveOwnProperty("wind");

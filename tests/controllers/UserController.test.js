@@ -15,7 +15,7 @@ chai.use(chaiHttp)
 // TEST CONTROLLER - Ajouter un utilisateur (tous les roles)
 describe("POST - /register", () => {
     it("Ajouter un utilisateur . - S", (done) => {
-        chai.request(server).post('/register').send({
+        chai.request(server).post('/register').auth(token, { type: "bearer" }).send({
             firstName: "Test",
             lastName: "Test",
             email: "testeur@gmail.com",
@@ -27,7 +27,7 @@ describe("POST - /register", () => {
         });
     })
     it("Ajouter un utilisateur incorrect. (Sans password) - E", (done) => {
-        chai.request(server).post('/register').send({
+        chai.request(server).post('/register').auth(token, { type: "bearer" }).send({
             firstName: "skos",
             lastName: 'Us',
             email: 'lutfu.us@gmil.com',
@@ -38,7 +38,7 @@ describe("POST - /register", () => {
         })
     })
     it("Ajouter un utilisateur incorrect. (Avec email déjà existant) - E", (done) => {
-        chai.request(server).post('/register').send({
+        chai.request(server).post('/register').auth(token, { type: "bearer" }).send({
             firstName: "luf",
             lastName: "Us",
             email: "testeur@gmail.com",
@@ -49,7 +49,7 @@ describe("POST - /register", () => {
         })
     })
     it("Ajouter un utilisateur incorrect. (Avec un email vide) - E", (done) => {
-        chai.request(server).post('/register').send({
+        chai.request(server).post('/register').auth(token, { type: "bearer" }).send({
             firstName: "luffu",
             lastName: "skdqpo",
             email: "",
@@ -66,7 +66,7 @@ describe("POST - /login", () => {
     it("Connexion utilisateur - S", (done) => {
         // console.log(users)
         chai.request(server).post('/login').send({
-            email: "testeur@gmail.com",
+            username: "testeur@gmail.com",
             password: "azerty"
         }).end((err, res) => {
             res.should.have.status(200)
@@ -76,7 +76,7 @@ describe("POST - /login", () => {
     })
     it("Connexion utilisateur - Identifiant incorrect - E", (done) => {
         chai.request(server).post('/login').send({
-            email: "email_incorrect",
+            username: "email_incorrect",
             password: "azerty"
         }).end((err, res) => {
             res.should.have.status(401)
@@ -85,7 +85,7 @@ describe("POST - /login", () => {
     })
     it("Connexion utilisateur - Mot de passe incorrect - E", (done) => {
         chai.request(server).post('/login').send({
-            email: "testeur@gmail.com",
+            username: "testeur@gmail.com",
             password: "password_incorrect"
         }).end((err, res) => {
             res.should.have.status(401)

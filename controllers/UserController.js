@@ -4,16 +4,26 @@ const passport = require('passport')
 
 // La fonction pour gerer l'authentification depuis passport
 module.exports.loginUser = function (req, res, next) {
-    const { email, password } = req.body;
-    UserService.loginUser(email, password, null, (err, user) => {
+    passport.authenticate('login', { badRequestMessage: "Les champs sont manquants." }, async function (err, user) {
         if (err) {
-            res.statusCode = 401;
-            return res.send({ msg: err.msg, type_error: err.type_error });
+            res.statusCode = 401
+            return res.send({ msg: "Le nom d'utilisateur ou mot de passe n'est pas correct.", type_error: "no-valid-login" })
         }
-        res.statusCode = 200;
-        return res.send(user);
-    });
-};
+        else {
+            req.logIn(user, async function (err) {
+                if (err) {
+                    console.log(err)
+                    res.statusCode = 500
+                    return res.send({ msg: "Problème d'authentification sur le serveur.", type_error: "internal" })
+                }
+                else {
+                    return res.send(user)
+                }
+            })
+        }
+    })(req, res, next)
+}
+
 // La fonction permet d'ajouter un utilisateur.
 module.exports.addOneUser = function (req, res) {
     req.log.info("Création d'un utilisateur")
