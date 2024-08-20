@@ -156,7 +156,7 @@ module.exports.addManyWeathers = async function (cities, user_id, options, callb
 
 module.exports.findOneWeatherById = async function (weather_id, options, callback) {
     try {
-        // Check if the provided weather_id is a valid MongoDB ObjectId
+        // Vérifier si l'ID fourni est un ObjectId valide
         if (!mongoose.isValidObjectId(weather_id)) {
             return callback({
                 msg: "ObjectId non conforme.",
@@ -164,13 +164,13 @@ module.exports.findOneWeatherById = async function (weather_id, options, callbac
             });
         }
 
-        // Define options for the query, including population of related fields if specified
+        // Options pour la requête, incluant la population de champs associés si spécifié
         const opts = { populate: options && options.populate ? ["user_id"] : [] };
 
-        // Perform the query to find the weather by its ID
+        // Rechercher le weather par son ID
         const weather = await Weather.findById(weather_id, null, opts).exec();
 
-        // Handle cases where no matching weather data is found
+        // Gérer les cas où aucun weather correspondant n'est trouvé
         if (!weather) {
             return callback({
                 msg: "Aucun weather trouvé.",
@@ -178,17 +178,18 @@ module.exports.findOneWeatherById = async function (weather_id, options, callbac
             });
         }
 
-        // Return the found weather data
-        callback(null, weather.toObject());
+        // Retourner les données trouvées
+        return callback(null, weather.toObject());
     } catch (error) {
-        // Handle potential errors during the MongoDB query
-        console.error('Error querying database:', error); // Debugging log
-        callback({
+        // Gérer les erreurs potentielles lors de la requête MongoDB
+        console.error('Erreur lors de la recherche en base de données:', error);
+        return callback({
             msg: "Impossible de chercher l'élément.",
             type_error: "error-mongo"
         });
     }
 };
+
 
 
 

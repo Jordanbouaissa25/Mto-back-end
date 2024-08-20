@@ -55,12 +55,12 @@ describe("addOneWeather", () => {
     })
     it("Weather correct. - S", (done) => {
         WeatherService.addOneWeather("Besançon", tab_id_users[0], null, function (err, value) {
-            // console.log(value)
+            // console.log(err)
+            expect(err).to.be.null;
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
-            id_weather_valid = value._id;
-            weathers.push(value);
-            done()
+            id_weather_valid = value._id
+            done();
         });
     });
     it("Weather incorrect. (Avec une city inexistante) - E", (done) => {
@@ -126,10 +126,10 @@ describe("findOneWeatherById", () => {
     it("Chercher un weather existant correct. - S", (done) => {
         WeatherService.findOneWeatherById(id_weather_valid, null, function (err, value) {
             // console.log(err, value)
-            expect(value).to.be.a("object");
-            expect(value).to.haveOwnProperty("_id");
-            expect(value).to.haveOwnProperty("wind");
-            expect(err).to.be.null; // Ensures no error is returned for a valid ID
+            expect(err).to.be.null;
+            expect(value).to.be.an('object');
+            expect(value).to.have.property('_id'),
+                expect(value).to.have.property('humidity');
             done();
         });
     });
@@ -193,7 +193,7 @@ describe("findOneWeather", () => {
     });
 })
 
-describe("findManyweathers", () => {
+describe("findManyWeathers", () => {
     it("Retourne 2 weathers. - S", (done) => {
         WeatherService.findManyWeathers(null, 1, 2, null, function (err, value) {
             //console.log(err, value)
