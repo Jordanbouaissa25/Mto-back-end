@@ -26,6 +26,30 @@ const weatherSchema = new Schema({
     wind: {
         type: String,
         required: true
+    },
+    sunrise: {
+        type: Number,
+        required: true
+    },
+    sunset: {
+        type: Number,
+        required: true
+    },
+    lon: {
+        type: Number,
+        required: true
+    },
+    lat: {
+        type: Number,
+        required: true
+    },
+    pressure: {
+        type: Number,
+        required: true
+    },
+    visibility: {
+        type: Number,
+        required: true
     }
 })
 

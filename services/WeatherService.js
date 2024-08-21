@@ -16,6 +16,12 @@ module.exports.addOneWeather = async function (city, user_id, options, callback)
         const weather = {
             data_id: responseOfApi.data.id,
             user_id: user_id,
+            lon: responseOfApi.data.coord.lon,
+            lat: responseOfApi.data.coord.lat,
+            sunset: responseOfApi.data.sys.sunset,
+            sunrise: responseOfApi.data.sys.sunrise,
+            pressure: responseOfApi.data.main.pressure,
+            visibility: responseOfApi.data.visibility,
             city: city,
             temp: responseOfApi.data.main.temp,
             humidity: responseOfApi.data.main.humidity,
@@ -77,12 +83,18 @@ module.exports.addManyWeathers = async function (cities, user_id, options, callb
             const weather = {
                 data_id: responseOfApi.data.id,
                 user_id: user_id,
+                lon: responseOfApi.data.coord.lon,
+                lat: responseOfApi.data.coord.lat,
+                sunset: responseOfApi.data.sys.sunset,
+                sunrise: responseOfApi.data.sys.sunrise,
+                pressure: responseOfApi.data.main.pressure,
+                visibility: responseOfApi.data.visibility,
                 city: city,
                 temp: responseOfApi.data.main.temp,
                 humidity: responseOfApi.data.main.humidity,
                 wind: responseOfApi.data.wind.speed,
             };
-
+            // console.log(responseOfApi.data.sys.sunset)
             const new_weather = new Weather(weather);
             const validationErrors = new_weather.validateSync();
 
@@ -272,7 +284,7 @@ module.exports.findManyWeathers = function (search, page, limit, options, callba
                 callback(null, { count: 0, results: [] })
             }
         }).catch((e) => {
-            console.log(e)
+            // console.log(e)
             callback(e)
         })
     }

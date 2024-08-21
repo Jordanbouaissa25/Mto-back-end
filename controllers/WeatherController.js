@@ -5,7 +5,7 @@ const LoggerHttp = require('../utils/logger').http
 // La fonction permet d'ajouter un Weather.
 module.exports.addOneWeather = function (req, res) {
     req.log.info("Création d'un Weather");
-    WeatherService.addOneWeather(req.user._id, req.query.city, null, function (err, value) {
+    WeatherService.addOneWeather(req.query.city, req.user._id, null, function (err, value) {
 
         if (err && err.type_error == "no-found") {
             res.statusCode = 404;
@@ -16,29 +16,6 @@ module.exports.addOneWeather = function (req, res) {
         } else if (err && err.type_error == "duplicate") {
             res.statusCode = 405;
             res.send(err);
-        } else {
-            res.statusCode = 201;
-            res.send(value);
-        }
-    });
-};
-
-// La fonction permet d'ajouter plusieurs Weathers.
-module.exports.addManyWeathers = function (req, res) {
-    req.log.info("Création de plusieurs Weathers");
-    WeatherService.addManyWeathers(req.body, function (err, value) {
-        if (err && err.type.error == "validator") {
-            res.statusCode = 405;
-            res.send(err);
-        } else if (err && err.type_error == "duplicate") {
-            res.statusCode = 405;
-            res.send(err)
-        } else if (err && err.type_error == "no-found") {
-            res.statusCode = 404;
-            res.send(err)
-        } else if (err && err.type_error == "no-valid") {
-            res.statusCode = 405;
-            res.send(err)
         } else {
             res.statusCode = 201;
             res.send(value);
@@ -101,31 +78,6 @@ module.exports.findManyWeathers = function (req, res) {
     req.log.info("Chercher des Weathers");
     WeatherService.findManyWeathers(search, page, limit, opts, (err, value) => {
         if (err && err.type_error == "no-valid") {
-            res.statusCode = 405;
-            res.send(err);
-        } else if (err && err.type_error == "error-mongo") {
-            res.statusCode = 500;
-            res.send(err);
-        } else {
-            res.statusCode = 200;
-            res.send(value);
-        }
-    });
-};
-
-// La fonction permet de chercher plusieurs Weathers par ID.
-module.exports.findManyWeathersById = function (req, res) {
-    var arg = req.query.id;
-    if (arg && !Array.isArray(arg)) {
-        arg = [arg];
-    }
-    var opts = { populate: req.query.populate }
-    req.log.info("Chercher plusieurs Weathers");
-    WeatherService.findManyWeathersById(arg, opts, function (err, value) {
-        if (err && err.type_error == "no-found") {
-            res.statusCode = 404;
-            res.send(err);
-        } else if (err && err.type_error == "no-valid") {
             res.statusCode = 405;
             res.send(err);
         } else if (err && err.type_error == "error-mongo") {

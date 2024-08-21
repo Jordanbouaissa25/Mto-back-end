@@ -24,6 +24,28 @@ module.exports.loginUser = function (req, res, next) {
     })(req, res, next)
 }
 
+module.exports.logoutUser = function (req, res) {
+    req.log.info("Déconnexion d'un utilisateur")
+    UserService.updateOneUser(req.user._id, { token: "" }, null, function (err, value) {
+        if (err && err.type_error == "no-found") {
+            res.statusCode = 404
+            res.send(err)
+        }
+        else if (err && err.type_error == "validator") {
+            res.statusCode = 405
+            res.send(err)
+        }
+        else if (err && err.type_error == "duplicate") {
+            res.statusCode = 405
+            res.send(err)
+        }
+        else {
+            res.statusCode = 201
+            res.send({ message: "L'utilisateur est déconnecté." })
+        }
+    })
+}
+
 // La fonction permet d'ajouter un utilisateur.
 module.exports.addOneUser = function (req, res) {
     req.log.info("Création d'un utilisateur")
