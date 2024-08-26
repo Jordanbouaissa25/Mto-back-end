@@ -354,6 +354,139 @@ describe("findOneAndUpdate", () => {
     });
 });
 
+describe("updatePassword", () => {
+
+    // Utilisateur déconnecté
+    it("Modifier un mot de passe avec des caractères invalides. - E", (done) => {
+        UserService.findOneAndUpdate("edouard.dupont@gmail.com", "Invalid@Pass", null, function (err, value) {
+            // console.log(err, value)
+            expect(value).to.be.undefined;
+            expect(err).to.be.a("object");
+            expect(err).to.haveOwnProperty("msg");
+            expect(err).to.haveOwnProperty("type_error");
+            expect(err["type_error"]).to.equal("no-valid");
+            // expect(err['msg']).to.equal("Critères de recherche invalides..");
+            done();
+        });
+    });
+
+    it("Modifier un mot de passe avec moins de 8 caractères. - E", (done) => {
+        UserService.findOneAndUpdate("edouard.dupont@gmail.com", "wjjh", null, function (err, value) {
+            expect(value).to.be.undefined;
+            expect(err).to.be.a("object");
+            expect(err).to.haveOwnProperty('msg');
+            expect(err).to.haveOwnProperty('type_error');
+            expect(err['type_error']).to.be.equal('no-valid');
+            done();
+        });
+    });
+
+    it("Essayer de modifier un utilisateur non existant. - E", (done) => {
+        UserService.findOneAndUpdate("nonexistentuser@gmail.com", "ValidPass123", null, function (err, value) {
+            // console.log(err, value)
+            expect(value).to.be.undefined;
+            expect(err).to.be.a("object");
+            expect(err).to.haveOwnProperty("msg");
+            expect(err).to.haveOwnProperty("type_error");
+            expect(err["type_error"]).to.equal("no-valid");
+            expect(err['msg']).to.equal("Critères de recherche invalides.");
+            done();
+        });
+    });
+
+    it("Modifier un mot de passe sans email valide. - E", (done) => {
+        UserService.findOneAndUpdate(null, "ValidPass123", null, function (err, value) {
+            // console.log(err, value)
+            expect(value).to.be.undefined;
+            expect(err).to.be.a("object");
+            expect(err).to.haveOwnProperty("msg");
+            expect(err).to.haveOwnProperty("type_error");
+            expect(err["type_error"]).to.equal("no-valid");
+            // expect(err['msg']).to.equal("L'email est requis et doit être une chaîne de caractères.");
+            done();
+        });
+    });
+
+    it("Modifier un mot de passe sans mot de passe valide. - E", (done) => {
+        UserService.findOneAndUpdate("edouard.dupont@gmail.com", null, null, function (err, value) {
+            expect(value).to.be.undefined;
+            expect(err).to.be.a("object");
+            expect(err).to.haveOwnProperty("msg");
+            expect(err).to.haveOwnProperty("type_error");
+            expect(err["type_error"]).to.equal("no-valid");
+            // expect(err['msg']).to.equal("Le mot de passe est requis et doit être une chaîne de caractères.");
+            done();
+        });
+    });
+
+    // Utilisateur connecté
+    it("Modifier un mot de passe correctement. - S", (done) => {
+        UserService.findOneAndUpdate(
+            { email: "edouard.dupont@gmail.com" },
+            { password: "NewPassword123" },
+            null,
+            function (err, value) {
+                expect(err).to.be.null;
+                expect(value).to.be.an("object");
+                expect(value).to.haveOwnProperty('email');
+                expect(value.email).to.equal("edouard.dupont@gmail.com");
+                done();
+            }
+        );
+    });
+
+    it("Modifier un mot de passe avec des caractères invalides. - E", (done) => {
+        UserService.findOneAndUpdate(
+            { email: "edouard.dupont@gmail.com" },
+            { password: "Invalid@Pass" },
+            null,
+            function (err, value) {
+                expect(value).to.be.undefined;
+                expect(err).to.be.a("object");
+                expect(err).to.haveOwnProperty("msg");
+                expect(err).to.haveOwnProperty("type_error");
+                expect(err["type_error"]).to.equal("no-valid");
+                expect(err['msg']).to.equal("Le mot de passe contient des caractères spéciaux non autorisés.");
+                done();
+            }
+        );
+    });
+
+    it("Modifier un mot de passe avec moins de 8 caractères. - E", (done) => {
+        UserService.findOneAndUpdate(
+            { email: "edouard.dupont@gmail.com" },
+            { password: "wjjh" },
+            null,
+            function (err, value) {
+                expect(value).to.be.undefined;
+                expect(err).to.haveOwnProperty('msg');
+                expect(err).to.haveOwnProperty('type_error');
+                expect(err['type_error']).to.be.equal('no-valid');
+                done();
+            }
+        );
+    });
+
+    it("Essayer de modifier un utilisateur non existant. - E", (done) => {
+        UserService.findOneAndUpdate(
+            { email: "nonexistentuser@gmail.com" },
+            { password: "ValidPass123" },
+            null,
+            function (err, value) {
+                expect(value).to.be.undefined;
+                expect(err).to.be.a("object");
+                expect(err).to.haveOwnProperty("msg");
+                expect(err).to.haveOwnProperty("type_error");
+                expect(err["type_error"]).to.equal("no-found");
+                expect(err['msg']).to.equal("Utilisateur non trouvé.");
+                done();
+            }
+        );
+    });
+
+});
+
+
 describe("updateManyUsers", () => {
     it("Modifier plusieurs utilisateurs correctement. - S", (done) => {
         UserService.updateManyUsers(
