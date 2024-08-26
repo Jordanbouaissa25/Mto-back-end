@@ -6,7 +6,7 @@ const passport = require('passport')
 module.exports.loginUser = function (req, res, next) {
     passport.authenticate('login', { badRequestMessage: "Les champs sont manquants." }, async function (err, user) {
         if (err) {
-            res.statusCode = 401
+            res.statusCode = 405
             return res.send({ msg: "Le nom d'utilisateur ou mot de passe n'est pas correct.", type_error: "no-valid-login" })
         }
         else {
@@ -198,6 +198,46 @@ module.exports.updateOneUser = function (req, res) {
             res.send(value);
         }
     })
+};
+
+module.exports.updatePassword = function (req, res) {
+    const email = req.body.email
+    const newPassword = req.body.newPassword;
+    req.log.info("Modifier un mot de passe")
+    UserService.findOneAndUpdate({ email: email }, { password: newPassword }, null, (err, value) => {
+        if (err && err.type_error == "no-found") {
+            res.statusCode = 404;
+            res.send(err);
+        } else if (err && err.type_error == "validator") {
+            res.statusCode = 405;
+            res.send(err);
+        } else if (err && (err.type_error == "no-valid" || err.type_error == "validator" || err.type_error == "duplicate")) {
+            res.statusCode = 405;
+            res.send(err);
+        } else {
+            res.statusCode = 200;
+            res.send(value);
+        }
+    })
+}
+
+module.exports.findOneAndUpdate = function (req, res) {
+    const updateData = req.body; // Par exemple { password: "NewPass123" }
+
+    req.log.info("Mise à jour des informations d'un utilisateur");
+
+    UserService.findOneAndUpdate({ _id: req.user._id }, updateData, null, (err, value) => {
+        if (err && err.type_error === "no-found") {
+            res.statusCode = 404;
+            res.send(err);
+        } else if (err && (err.type_error === "no-valid" || err.type_error === "validator" || err.type_error === "duplicate")) {
+            res.statusCode = 405;
+            res.send(err);
+        } else {
+            res.statusCode = 200;
+            res.send(value);
+        }
+    });
 };
 
 module.exports.updateManyUsers = function (req, res) {

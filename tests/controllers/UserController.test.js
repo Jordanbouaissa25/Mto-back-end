@@ -79,7 +79,7 @@ describe("POST - /login", () => {
             username: "email_incorrect",
             password: "azerty"
         }).end((err, res) => {
-            res.should.have.status(401)
+            res.should.have.status(405)
             done()
         })
     })
@@ -88,7 +88,7 @@ describe("POST - /login", () => {
             username: "testeur@gmail.com",
             password: "password_incorrect"
         }).end((err, res) => {
-            res.should.have.status(401)
+            res.should.have.status(405)
             done()
         })
     })
@@ -341,6 +341,76 @@ describe("PUT - /user:id", () => {
             })
     })
 })
+
+describe("PUT - /user", () => {
+    it("Modifier un mot de passe correctement. - S", (done) => {
+        chai.request(server)
+            .put('/user')
+            .auth(token, { type: "bearer" })
+            .send({
+                email: "edouard.dupont@gmail.com",
+                password: "NewSecurePassword123"
+            })
+            .end((err, res) => {
+                console.log(res.body)
+                res.should.have.status(200);
+                res.body.should.be.an('object');
+                res.body.should.have.property('email').eql('edouard.dupont@gmail.com');
+                done();
+            });
+    });
+
+    it("Essayer de modifier un mot de passe avec un champ vide. - E", (done) => {
+        chai.request(server)
+            .put('/user')
+            .auth(token, { type: "bearer" })
+            .send({
+                email: "edouard.dupont@gmail.com",
+                password: ""
+            })
+            .end((err, res) => {
+                res.should.have.status(405);
+                res.body.should.be.an('object');
+                res.body.should.have.property('msg');
+                res.body.should.have.property('fields_with_error').with.lengthOf(1);
+                res.body.fields_with_error.should.include('password');
+                done();
+            });
+    });
+
+    it("Essayer de modifier un mot de passe avec des caractères invalides. - E", (done) => {
+        chai.request(server)
+            .put('/user')
+            .auth(token, { type: "bearer" })
+            .send({
+                email: "edouard.dupont@gmail.com",
+                password: "invalid@password"
+            })
+            .end((err, res) => {
+                res.should.have.status(405);
+                res.body.should.be.an('object');
+                res.body.should.have.property('msg');
+                done();
+            });
+    });
+
+    it("Essayer de modifier un mot de passe avec un mot de passe trop court. - E", (done) => {
+        chai.request(server)
+            .put('/user')
+            .auth(token, { type: "bearer" })
+            .send({
+                email: "edouard.dupont@gmail.com",
+                password: "short"
+            })
+            .end((err, res) => {
+                // console.log(res.body)
+                res.should.have.status(405);
+                res.body.should.be.an('object');
+                res.body.should.have.property('msg');
+                done();
+            });
+    });
+});
 
 describe("PUT - /users", () => {
     it("Modifier plusieurs utilisateurs. - S", (done) => {

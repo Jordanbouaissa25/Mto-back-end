@@ -4,7 +4,7 @@ services:
     build: "."
     container_name: node-api
     environment:
-      - PORT=3000
+      - PORT=3001
       - SECRET_KEY=MY_SECRET_KEY_HASH
       - SECRET_COOKIE=COOKIE
       - URL_DATABASE=mongodb://mongodb:27017

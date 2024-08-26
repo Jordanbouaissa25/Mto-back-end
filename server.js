@@ -45,6 +45,13 @@ const swaggerOptions = require(`./swagger.json`);
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  next();
+});
+
 /* --------------- Création des routes ------------ */
 
 // Création du endpoint pour connecter un utilisateur
@@ -70,6 +77,11 @@ app.get("/users_by_filters", DatabaseMiddleware.checkConnexion, passport.authent
 
 // Création du endpoint /user pour la modification d'un utilisateur
 app.put("/user/:id", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.updateOneUser);
+
+// Modification du mot de passe
+app.put("/user", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.findOneAndUpdate);
+
+app.put("/userResPassword", DatabaseMiddleware.checkConnexion, UserController.updatePassword);
 
 // Création du endpoint /users pour la modification de plusieurs utilisateurs
 app.put("/users", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.updateManyUsers);

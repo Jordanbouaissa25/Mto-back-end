@@ -299,6 +299,68 @@ module.exports.updateOneUser = async function (user_id, update, options, callbac
   }
 }
 
+// Fonction pour mettre à jour un utilisateur basé sur une condition spécifique
+module.exports.findOneAndUpdate = async function (criteria, update, options, callback) {
+  if (!criteria || typeof criteria !== 'object') {
+    return callback({ msg: "Critères de recherche invalides.", type_error: 'no-valid' });
+  }
+
+  if (!update || typeof update !== 'object') {
+    return callback({ msg: "Données de mise à jour invalides.", type_error: 'no-valid' });
+  }
+
+  if (update.password) {
+    // Vérification des caractères spéciaux
+    const invalidChars = /[^a-zA-Z0-9]/;
+    if (invalidChars.test(update.password)) {
+      return callback({ msg: "Le mot de passe contient des caractères spéciaux non autorisés.", type_error: 'no-valid' });
+    }
+
+    // Vérification de la longueur du mot de passe (par exemple, minimum 8 caractères)
+    if (update.password.length < 8) {
+      return callback({ msg: "Le mot de passe doit contenir au moins 8 caractères.", type_error: 'no-valid' });
+    }
+
+    // Hachage du mot de passe
+    const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+    update.password = await bcrypt.hash(update.password, salt);
+  }
+
+  try {
+    // Mise à jour de l'utilisateur
+    const user = await User.findOneAndUpdate(criteria, update, { new: true, runValidators: true });
+    if (user) {
+      callback(null, user.toObject());
+    } else {
+      callback({ msg: "Utilisateur non trouvé.", type_error: "no-found" });
+    }
+  } catch (err) {
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      const duplicateErrors = {
+        msg: `Erreur de clé dupliquée : ${field} doit être unique.`,
+        fields_with_error: [field],
+        fields: { [field]: `Le ${field} est déjà pris.` },
+        type_error: "duplicate"
+      };
+      callback(duplicateErrors);
+    } else {
+      const errors = err.errors;
+      const text = Object.keys(errors).map((e) => errors[e].properties.message).join(' ');
+      const fields = Object.keys(errors).reduce((result, value) => {
+        result[value] = errors[value].properties.message;
+        return result;
+      }, {});
+      const errorResponse = {
+        msg: text,
+        fields_with_error: Object.keys(errors),
+        fields: fields,
+        type_error: "validator"
+      };
+      callback(errorResponse);
+    }
+  }
+};
 
 module.exports.updateManyUsers = async function (users_id, update, options, callback) {
   if (users_id && Array.isArray(users_id) && users_id.length > 0 && users_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == users_id.length) {
