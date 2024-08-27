@@ -352,7 +352,7 @@ describe("PUT - /user", () => {
                 password: "NewSecurePassword123"
             })
             .end((err, res) => {
-                console.log(res.body)
+                // console.log(res.body)
                 res.should.have.status(200);
                 res.body.should.be.an('object');
                 res.body.should.have.property('email').eql('edouard.dupont@gmail.com');
@@ -463,6 +463,113 @@ describe("PUT - /users", () => {
             })
     })
 })
+
+describe("PUT - /userResPassword", () => {
+    // Test pour une modification réussie
+    it("Modifier un mot de passe avec succès. - S", (done) => {
+        chai.request(server)
+            .put('/userResPassword')
+            .auth(token, { type: "bearer" })
+            .send({
+                email: "edouard.dupont@gmail.com",
+                newPassword: "ValidPass123"
+            })
+            .end((err, res) => {
+                // console.log(res.body)
+                res.should.have.status(200);
+                res.body.should.be.an('object');
+                res.body.should.have.property('email').eql("edouard.dupont@gmail.com");
+                done();
+            });
+    });
+
+    // Test pour un mot de passe avec des caractères invalides
+    it("Essayer de modifier un mot de passe avec des caractères invalides. - E", (done) => {
+        chai.request(server)
+            .put('/userResPassword')
+            .auth(token, { type: "bearer" })
+            .send({
+                email: "edouard.dupont@gmail.com",
+                newPassword: "invalid@password"
+            })
+            .end((err, res) => {
+                res.should.have.status(405);
+                res.body.should.be.an('object');
+                res.body.should.have.property('msg');
+                done();
+            });
+    });
+
+    // Test pour un mot de passe trop court
+    it("Essayer de modifier un mot de passe avec un mot de passe trop court. - E", (done) => {
+        chai.request(server)
+            .put('/userResPassword')
+            .auth(token, { type: "bearer" })
+            .send({
+                email: "edouard.dupont@gmail.com",
+                newPassword: "short"
+            })
+            .end((err, res) => {
+                res.should.have.status(405);
+                res.body.should.be.an('object');
+                res.body.should.have.property('msg');
+                done();
+            });
+    });
+
+    // Test pour un utilisateur non existant
+    it("Essayer de modifier un utilisateur non existant. - E", (done) => {
+        chai.request(server)
+            .put('/userResPassword')
+            .auth(token, { type: "bearer" })
+            .send({
+                email: "nonexistentuser@gmail.com",
+                newPassword: "ValidPass123"
+            })
+            .end((err, res) => {
+                res.should.have.status(404);
+                res.body.should.be.an('object');
+                res.body.should.have.property('msg');
+                done();
+            });
+    });
+
+    // Test pour un email manquant
+    it("Essayer de modifier un mot de passe sans email valide. - E", (done) => {
+        chai.request(server)
+            .put('/userResPassword')
+            .auth(token, { type: "bearer" })
+            .send({
+                newPassword: ""
+            })
+            .end((err, res) => {
+                // console.log(res.body)
+                res.should.have.status(405);
+                res.body.should.be.an('object');
+                res.body.should.have.property('msg');
+                done();
+            });
+    });
+
+    // Test pour un mot de passe manquant
+    it("Essayer de modifier un mot de passe avec caractères spéciaux. - E", (done) => {
+        chai.request(server)
+            .put('/userResPassword')
+            .auth(token, { type: "bearer" })
+            .send({
+                email: "edouard.dupont@gmail.com",
+                newPassword: ",)=="
+            })
+            .end((err, res) => {
+                // console.log(res.body)
+                res.should.have.status(405);
+                res.body.should.be.an('object');
+                res.body.should.have.property('msg');
+                done();
+            });
+    });
+});
+
 
 describe("DELETE - /user", () => {
 

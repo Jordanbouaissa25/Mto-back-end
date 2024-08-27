@@ -55,8 +55,7 @@ describe("addOneWeather", () => {
     })
     it("Weather correct. - S", (done) => {
         WeatherService.addOneWeather("Besançon", tab_id_users[0], null, function (err, value) {
-            // console.log(value)
-            // console.log(err)
+            // console.log(err, value)
             expect(err).to.be.null;
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
