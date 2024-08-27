@@ -223,7 +223,7 @@ module.exports.updatePassword = function (req, res) {
 
 module.exports.findOneAndUpdate = function (req, res) {
     const updateData = req.body; // Par exemple { password: "NewPass123" }
-
+    console.log(updateData)
     req.log.info("Mise à jour des informations d'un utilisateur");
 
     UserService.findOneAndUpdate({ _id: req.user._id }, updateData, null, (err, value) => {

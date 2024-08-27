@@ -1,4 +1,5 @@
 const UserSchema = require('../schemas/User')
+const SettingService = require('./SettingService');
 const _ = require('lodash')
 const async = require('async')
 const mongoose = require('mongoose')
@@ -35,7 +36,13 @@ module.exports.addOneUser = async function (user, options, callback) {
       callback(err);
     } else {
       await new_user.save();
-      callback(null, new_user.toObject());
+      SettingService.addOneSetting({
+        setting_temperature: "°C",
+        setting_wind: "km/h",
+        user_id: new_user._id
+      }, null, function (err, value) {
+        callback(null, new_user.toObject());
+      })
     }
   } catch (error) {
     if (error.code === 11000) { // Erreur de duplicité

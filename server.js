@@ -78,9 +78,10 @@ app.get("/users_by_filters", DatabaseMiddleware.checkConnexion, passport.authent
 // Création du endpoint /user pour la modification d'un utilisateur
 app.put("/user/:id", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.updateOneUser);
 
-// Modification du mot de passe
+// Modification de l'email quand l'utilisateur est connecté
 app.put("/user", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UserController.findOneAndUpdate);
 
+// Modification du mot de passe utilisateur déconnecté
 app.put("/userResPassword", DatabaseMiddleware.checkConnexion, UserController.updatePassword);
 
 // Création du endpoint /users pour la modification de plusieurs utilisateurs

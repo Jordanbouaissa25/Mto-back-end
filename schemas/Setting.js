@@ -26,16 +26,6 @@ const settingSchema = new Schema({
         type: String,
         required: false
     },
-    update_email: {
-        type: String,
-        required: true,
-        unique: true, // Assure que chaque email est unique dans la base de données
-        index: true
-    },
-    update_password: {
-        type: String,
-        required: true
-    },
 });
 
 // Création du modèle Settings à partir du schéma

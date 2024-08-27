@@ -57,9 +57,7 @@ describe("addOneSetting", () => {
         var setting = {
             setting_temperature: "°C",
             setting_wind: "km/h",
-            update_email: "jordanbouaissa25@gmail.com",
-            update_password: "ojsdssjddsik",
-            user_id: rdm_user(tab_id_users)
+            user_id: tab_id_users[0]._id
         };
         SettingService.addOneSetting(setting, null, function (err, value) {
             expect(value).to.be.a("object");
@@ -70,21 +68,18 @@ describe("addOneSetting", () => {
         });
     });
 
-    it("Setting incorrect. (Sans city) - E", () => {
+    it("Setting incorrect. (Sans setting_wind) - E", () => {
         var setting_no_valid = {
             setting_temperature: "°Z",
-            setting_wind: "kmp/h",
-            update_email: "jqosijdqoid",
-            update_password: "ojsdssjd",
             user_id: rdm_user(tab_id_users)
         };
         SettingService.addOneSetting(setting_no_valid, function (err, value) {
             expect(err).to.haveOwnProperty("msg");
             expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
             expect(err).to.haveOwnProperty("fields");
-            expect(err["fields"]).to.haveOwnProperty("city");
-            expect(err["fields"]["city"]).to.equal(
-                "Path `city` is required."
+            expect(err["fields"]).to.haveOwnProperty("setting_wind");
+            expect(err["fields"]["setting_wind"]).to.equal(
+                "Path `setting_wind` is required."
             );
         });
     });
@@ -97,16 +92,12 @@ describe("addManysettings", () => {
                 setting_temperature: "°Cksjd",
                 setting_wind: "kdsokdm/h",
                 city: "dlkjjs",
-                update_email: "jqosijdqwsmlkcoid",
-                update_password: "ojsdsqàfàsjd",
                 user_id: rdm_user(tab_id_users)
             },
             {
                 setting_temperature: "°Cdskj",
                 setting_wind: "kxkockm/h",
                 city: "Montbélcskl,siard",
-                update_email: "jqosopefijdqoid",
-                update_password: "odslkjsdssjd",
                 user_id: rdm_user(tab_id_users)
             },
         ];
@@ -122,16 +113,12 @@ describe("addManysettings", () => {
                 setting_temperature: "°C",
                 setting_wind: "km/h",
                 city: "Hurghada",
-                update_email: "cyrilconstantin@gmail.com",
-                update_password: "0000",
                 user_id: rdm_user(tab_id_users)
             },
             {
                 setting_temperature: "°F",
                 setting_wind: "mi/h",
                 city: "Bali",
-                update_email: "edouardbernier@gmail.com",
-                update_password: "0000",
                 user_id: rdm_user(tab_id_users)
             },
         ];
@@ -178,10 +165,11 @@ describe("findOneSetting", () => {
 
 describe("findOneSettingById", () => {
     it("Chercher un setting existant correct. - S", (done) => {
-        SettingService.findOneSettingById(id_setting_valid, null, function (err, value) {
+        SettingService.findOneSettingById(tab_id_users[0], null, function (err, value) {
+            // console.log(err, value)
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
-            expect(value).to.haveOwnProperty("update_email");
+            expect(value).to.haveOwnProperty("setting_temperature");
             done();
         });
     });
@@ -233,15 +221,15 @@ describe("updateOneSetting", () => {
     it("Modifier un Setting correct. - S", (done) => {
         SettingService.updateOneSetting(
             id_setting_valid,
-            { city: "Updated city", update_password: "Updated update_password" },
+            { setting_wind: "km/h", setting_temperature: "°C" },
             function (err, value) {
-                // console.log(err)
+                // console.log(err, value)
                 expect(value).to.be.a("object");
                 expect(value).to.haveOwnProperty("_id");
-                expect(value).to.haveOwnProperty("city");
+                expect(value).to.haveOwnProperty("setting_temperature");
                 //  expect(value).to.haveOwnProperty("content");
-                expect(value["city"]).to.be.equal("Updated city");
-                expect(value["update_password"]).to.be.equal("Updated update_password");
+                expect(value["setting_wind"]).to.be.equal("km/h");
+                expect(value["setting_temperature"]).to.be.equal("°C");
                 done();
             }
         );
@@ -264,14 +252,14 @@ describe("updateOneSetting", () => {
     it("Modifier un Setting avec des champs requis vides. - E", (done) => {
         SettingService.updateOneSetting(
             id_setting_valid,
-            { update_email: "", update_password: "Updated update_password" },
+            { setting_wind: "", setting_temperature: "°C" },
             function (err, value) {
                 // console.log(err, value)
                 expect(value).to.be.undefined;
                 expect(err).to.haveOwnProperty("msg");
                 expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
                 expect(err).to.haveOwnProperty("fields");
-                expect(err["fields"]).to.haveOwnProperty("update_email");
+                expect(err["fields"]).to.haveOwnProperty("setting_wind");
 
                 done();
             }
@@ -283,7 +271,7 @@ describe("updateManysettings", () => {
     it("Modifier plusieurs settings correctement. - S", (done) => {
         SettingService.updateManySettings(
             tab_id_settings,
-            { update_password: "Bulk Updated update_password" },
+            { setting_wind: "km/h", setting_temperature: "°F" },
             function (err, value) {
                 // console.log(err, value)
                 expect(value).to.haveOwnProperty("modifiedCount");
@@ -312,14 +300,14 @@ describe("updateManysettings", () => {
     it("Modifier plusieurs settings avec des champs requis vides. - E", (done) => {
         SettingService.updateManySettings(
             tab_id_settings,
-            { update_email: "", update_password: "Bulk Updated update_password" },
+            { setting_wind: "", setting_temperature: "°C" },
             function (err, value) {
                 // console.log(err, value)
                 expect(value).to.be.undefined;
                 expect(err).to.haveOwnProperty("msg");
                 expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
                 expect(err).to.haveOwnProperty("fields");
-                expect(err["fields"]).to.haveOwnProperty("update_email");
+                expect(err["fields"]).to.haveOwnProperty("setting_wind");
 
                 done();
             }
@@ -332,7 +320,7 @@ describe("deleteOneSetting", () => {
         SettingService.deleteOneSetting(id_setting_valid, function (err, value) {
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
-            expect(value).to.haveOwnProperty("city");
+            expect(value).to.haveOwnProperty("setting_wind");
             expect(value).to.haveOwnProperty("setting_temperature");
             done();
         });

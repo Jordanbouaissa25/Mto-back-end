@@ -28,10 +28,12 @@ module.exports.addOneSetting = async function (setting, options, callback) {
             };
             callback(err);
         } else {
+            // console.log(new_setting)
             await new_setting.save();
             callback(null, new_setting.toObject());
         }
     } catch (error) {
+        // console.log(error)
         if (error.code === 11000) { // Erreur de duplicité
             var field = Object.keys(error.keyValue)[0];
             var err = {
@@ -104,11 +106,11 @@ module.exports.addManySettings = async function (settings, callback) {
 
 
 
-module.exports.findOneSettingById = function (setting_id, options, callback) {
+module.exports.findOneSettingById = function (user_id, options, callback) {
     var opts = { populate: options && options.populate ? ["user_id"] : [] }
     // console.log('Received setting_id:', setting_id); // Debugging log
-    if (setting_id && mongoose.isValidObjectId(setting_id)) {
-        Setting.findById(setting_id, null, opts)
+    if (user_id && mongoose.isValidObjectId(user_id)) {
+        Setting.findOne({ user_id: user_id }, null, opts)
             .then((value) => {
                 //   console.log('Found value:', value); // Debugging log
                 if (value) {
@@ -122,7 +124,7 @@ module.exports.findOneSettingById = function (setting_id, options, callback) {
                 callback({ msg: "Impossible de chercher l'élément.", type_error: "error-mongo" });
             });
     } else {
-        console.error('Invalid ObjectId:', setting_id); // Debugging log
+        console.error('Invalid ObjectId:', user_id); // Debugging log
         callback({ msg: "ObjectId non conforme.", type_error: 'no-valid' });
     }
 };
@@ -225,7 +227,7 @@ module.exports.findManySettings = function (search, page, limit, options, callba
                 callback(null, { count: 0, results: [] })
             }
         }).catch((e) => {
-            console.log(e)
+            // console.log(e)
             callback(e)
         })
     }
