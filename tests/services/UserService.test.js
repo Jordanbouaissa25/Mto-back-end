@@ -9,12 +9,11 @@ var users = []
 describe("addOneUser", () => {
     it("Utilisateur correct. - S", (done) => {
         var user = {
-            firstName: "Edouard",
-            lastName: "Dupont",
             email: "edouard.dupont@gmail.com",
             password: "coucou"
         };
         UserService.addOneUser(user, null, function (err, value) {
+            // console.log(err, value)
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
             id_user_valid = value._id;
@@ -22,50 +21,58 @@ describe("addOneUser", () => {
             done()
         });
     });
-    it("Utilisateur incorrect. (Sans firstName) - E", () => {
+    it("Utilisateur incorrect. (Sans email) - E", (done) => {
         var user_no_valid = {
-            lastName: "Dupont",
-            email: "edouard.dupont@gmail.com",
+            password: "123456789"
         };
         UserService.addOneUser(user_no_valid, null, function (err, value) {
+            // console.log(err, value)
             expect(err).to.haveOwnProperty("msg");
             expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
             expect(err).to.haveOwnProperty("fields");
-            expect(err["fields"]).to.haveOwnProperty("firstName");
-            expect(err["fields"]["firstName"]).to.equal(
-                "Path `firstName` is required."
+            expect(err["fields"]).to.haveOwnProperty("email");
+            expect(err["fields"]["email"]).to.equal(
+                "Path `email` is required."
             );
+            done()
         });
     });
+    // it("Utilisateur correct avec un mot de passe avec + de 8 charactères. - S", () => {
+    //     var password_valid = {
+    //         email: "Testeur@gmail.com",
+    //         password: "Jordan09072001"
+    //     };
+    //     UserService.addOneUser(password_valid, null, function (err, value) {
+    //         console.log(err, value)
+    //         expect(value).to.be.a("object");
+    //         expect(value).to.haveOwnProperty("_id");
+    //         password_valid = value._id;
+    //         users.push(value)
+    //         done()
+    //     })
+    // })
 });
 
 describe("addManyUsers", () => {
     it("Utilisateurs à ajouter, non valide. - E", (done) => {
         var users_tab_error = [
             {
-                firstName: "Edouard",
-                lastName: "Dupont",
                 email: "edouard.dupont@gmail.com",
-                password: "okazqdojksqd"
+                password: "oka"
             },
             {
-                firstName: "Edouard",
-                lastName: "Dupont",
                 email: "edouard.dupont@gmail.com",
                 testing: true,
-                password: "iojazpqjdozqk"
+                password: "ioj"
             },
             {
-                firstName: "Edouard",
-                lastName: "Dupont",
                 email: "edouard.dupont@gmail.com",
                 testing: true,
-                password: "oajdsziozqp"
+                password: "oaj"
             },
             {
-                firstName: "Edouard",
                 email: "edouard.dupont@gmail.com",
-                password: "oiajzdzkqos"
+                password: "jjd"
             },
         ];
 
@@ -76,21 +83,15 @@ describe("addManyUsers", () => {
     it("Utilisateurs à ajouter, valide. - S", (done) => {
         var users_tab = [
             {
-                firstName: "Louison",
-                lastName: "Dupont",
                 email: "edouard.dupont3@gmail.com",
                 password: "oisdoqsd"
             },
             {
-                firstName: "Jordan",
-                lastName: "Dupont",
                 email: "edouard.dupont1@gmail.com",
                 testing: true,
                 password: "oizjdoiqzeji"
             },
             {
-                firstName: "Mathis",
-                lastName: "Dupont",
                 email: "edouard.dupont2@gmail.com",
                 testing: true,
                 password: "oiazjodilpmqzsks"
@@ -109,12 +110,12 @@ describe("addManyUsers", () => {
 describe("findOneUser", () => {
     it("Chercher un utilisateur par les champs sélectionné. -S", (done) => {
         UserService.findOneUser(["email"], users[0].email, null, function (err, value) {
-            expect(value).to.haveOwnProperty('firstName')
+            expect(value).to.haveOwnProperty('password')
             done()
         })
     })
     it("Chercher un utilisateur avec un champ non authorisé. -E", (done) => {
-        UserService.findOneUser(["email", "firstName"], users[0].email, null, function (err, value) {
+        UserService.findOneUser(["email", "password"], users[0].email, null, function (err, value) {
             expect(err).to.haveOwnProperty('type_error')
 
             done()
@@ -139,7 +140,7 @@ describe("findOneUserById", () => {
         UserService.findOneUserById(id_user_valid, null, function (err, value) {
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
-            expect(value).to.haveOwnProperty("lastName");
+            expect(value).to.haveOwnProperty("email");
             done();
         });
     });
@@ -188,14 +189,13 @@ describe("updateOneUser", () => {
     it("Modifier un utilisateur correct. - S", (done) => {
         UserService.updateOneUser(
             id_user_valid,
-            { firstName: "Jean", lastName: "Luc" }, null,
+            { email: "edouard.dupont@gmail.com", password: "123456789" }, null,
             function (err, value) {
+                // console.log(err, value)
                 expect(value).to.be.a("object");
                 expect(value).to.haveOwnProperty("_id");
-                expect(value).to.haveOwnProperty("firstName");
-                expect(value).to.haveOwnProperty("lastName");
-                expect(value["firstName"]).to.be.equal("Jean");
-                expect(value["lastName"]).to.be.equal("Luc");
+                expect(value).to.haveOwnProperty("email");
+                expect(value).to.haveOwnProperty("password");
                 done();
             }
         );
@@ -203,7 +203,7 @@ describe("updateOneUser", () => {
     it("Modifier un utilisateur avec id incorrect. - E", (done) => {
         UserService.updateOneUser(
             "1200",
-            { firstName: "Jean", lastName: "Luc" }, null,
+            { email: "aurelien@gmail.com", password: "123456789" }, null,
             function (err, value) {
                 expect(err).to.be.a("object");
                 expect(err).to.haveOwnProperty("msg");
@@ -214,7 +214,7 @@ describe("updateOneUser", () => {
         );
     });
     it("Modifier un utilisateur avec des champs requis vide. - E", (done) => {
-        UserService.updateOneUser(id_user_valid, { email: "", firstname: "AlexandrePorteron" }, null, function (err, value) {
+        UserService.updateOneUser(id_user_valid, { email: "", password: "123456789" }, null, function (err, value) {
             expect(value).to.be.undefined
             expect(err).to.haveOwnProperty('msg')
             expect(err).to.haveOwnProperty('fields_with_error').with.lengthOf(1)
@@ -355,45 +355,6 @@ describe("findOneAndUpdate", () => {
 });
 
 describe("updatePassword", () => {
-
-    // Utilisateur déconnecté
-    it("Modifier un mot de passe avec des caractères invalides. - E", (done) => {
-        UserService.findOneAndUpdate("edouard.dupont@gmail.com", "Invalid@Pass", null, function (err, value) {
-            // console.log(err, value)
-            expect(value).to.be.undefined;
-            expect(err).to.be.a("object");
-            expect(err).to.haveOwnProperty("msg");
-            expect(err).to.haveOwnProperty("type_error");
-            expect(err["type_error"]).to.equal("no-valid");
-            // expect(err['msg']).to.equal("Critères de recherche invalides..");
-            done();
-        });
-    });
-
-    it("Modifier un mot de passe avec moins de 8 caractères. - E", (done) => {
-        UserService.findOneAndUpdate("edouard.dupont@gmail.com", "wjjh", null, function (err, value) {
-            expect(value).to.be.undefined;
-            expect(err).to.be.a("object");
-            expect(err).to.haveOwnProperty('msg');
-            expect(err).to.haveOwnProperty('type_error');
-            expect(err['type_error']).to.be.equal('no-valid');
-            done();
-        });
-    });
-
-    it("Essayer de modifier un utilisateur non existant. - E", (done) => {
-        UserService.findOneAndUpdate("nonexistentuser@gmail.com", "ValidPass123", null, function (err, value) {
-            // console.log(err, value)
-            expect(value).to.be.undefined;
-            expect(err).to.be.a("object");
-            expect(err).to.haveOwnProperty("msg");
-            expect(err).to.haveOwnProperty("type_error");
-            expect(err["type_error"]).to.equal("no-valid");
-            expect(err['msg']).to.equal("Critères de recherche invalides.");
-            done();
-        });
-    });
-
     it("Modifier un mot de passe sans email valide. - E", (done) => {
         UserService.findOneAndUpdate(null, "ValidPass123", null, function (err, value) {
             // console.log(err, value)
@@ -438,7 +399,7 @@ describe("updatePassword", () => {
     it("Modifier un mot de passe avec des caractères invalides. - E", (done) => {
         UserService.findOneAndUpdate(
             { email: "edouard.dupont@gmail.com" },
-            { password: "Invalid@Pass" },
+            { password: "Invalid]Pass" },
             null,
             function (err, value) {
                 expect(value).to.be.undefined;
@@ -487,59 +448,60 @@ describe("updatePassword", () => {
 });
 
 
-describe("updateManyUsers", () => {
-    it("Modifier plusieurs utilisateurs correctement. - S", (done) => {
-        UserService.updateManyUsers(
-            tab_id_users,
-            { firstName: "Jean", lastName: "Luc" }, null,
-            function (err, value) {
-                expect(value).to.haveOwnProperty("modifiedCount");
-                expect(value).to.haveOwnProperty("matchedCount");
-                expect(value["matchedCount"]).to.be.equal(tab_id_users.length);
-                expect(value["modifiedCount"]).to.be.equal(tab_id_users.length);
-                done();
-            }
-        );
-    });
-    it("Modifier plusieurs utilisateurs avec id incorrect. - E", (done) => {
-        UserService.updateManyUsers(
-            "1200",
-            { firstName: "Jean", lastName: "Luc" }, null,
-            function (err, value) {
-                expect(err).to.be.a("object");
-                expect(err).to.haveOwnProperty("msg");
-                expect(err).to.haveOwnProperty("type_error");
-                expect(err["type_error"]).to.be.equal("no-valid");
-                done();
-            }
-        );
-    });
-    it("Modifier plusieurs utilisateurs avec des champs requis vide. - E", (done) => {
-        UserService.updateManyUsers(
-            tab_id_users,
-            { email: "", lastName: "Luc" }, null,
-            function (err, value) {
-                expect(value).to.be.undefined;
-                expect(err).to.haveOwnProperty("msg");
-                expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
-                expect(err).to.haveOwnProperty("fields");
-                expect(err["fields"]).to.haveOwnProperty("email");
-                expect(err["fields"]["email"]).to.equal(
-                    "Path `email` is required."
-                );
-                done();
-            }
-        );
-    });
-});
+// describe("updateManyUsers", () => {
+//     it("Modifier plusieurs utilisateurs correctement. - S", (done) => {
+//         UserService.updateManyUsers(
+//             tab_id_users,
+//             { email: "kslkfjslfs@gmail.com", password: "" }, null,
+//             function (err, value) {
+//                 console.log(err, value)
+//                 expect(value).to.haveOwnProperty("modifiedCount");
+//                 expect(value).to.haveOwnProperty("matchedCount");
+//                 expect(value["matchedCount"]).to.be.equal(tab_id_users.length);
+//                 expect(value["modifiedCount"]).to.be.equal(tab_id_users.length);
+//                 done();
+//             }
+//         );
+//     });
+//     it("Modifier plusieurs utilisateurs avec id incorrect. - E", (done) => {
+//         UserService.updateManyUsers(
+//             "1200",
+//             { email: "john@mail.com", password: "26516541659" }, null,
+//             function (err, value) {
+//                 expect(err).to.be.a("object");
+//                 expect(err).to.haveOwnProperty("msg");
+//                 expect(err).to.haveOwnProperty("type_error");
+//                 expect(err["type_error"]).to.be.equal("no-valid");
+//                 done();
+//             }
+//         );
+//     });
+//     it("Modifier plusieurs utilisateurs avec des champs requis vide. - E", (done) => {
+//         UserService.updateManyUsers(
+//             tab_id_users,
+//             { email: "", password: "slkfjqsoklf" }, null,
+//             function (err, value) {
+//                 expect(value).to.be.undefined;
+//                 expect(err).to.haveOwnProperty("msg");
+//                 expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
+//                 expect(err).to.haveOwnProperty("fields");
+//                 expect(err["fields"]).to.haveOwnProperty("email");
+//                 expect(err["fields"]["email"]).to.equal(
+//                     "Path `email` is required."
+//                 );
+//                 done();
+//             }
+//         );
+//     });
+// });
 
 describe("deleteOneUser", () => {
     it("Supprimer un utilisateur correct. - S", (done) => {
         UserService.deleteOneUser(id_user_valid, null, function (err, value) {
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
-            expect(value).to.haveOwnProperty("firstName");
-            expect(value).to.haveOwnProperty("lastName");
+            expect(value).to.haveOwnProperty("email");
+            expect(value).to.haveOwnProperty("password");
             done();
         });
     });

@@ -223,7 +223,7 @@ module.exports.updatePassword = function (req, res) {
 
 module.exports.findOneAndUpdate = function (req, res) {
     const updateData = req.body; // Par exemple { password: "NewPass123" }
-    console.log(updateData)
+    // console.log(updateData)
     req.log.info("Mise à jour des informations d'un utilisateur");
 
     UserService.findOneAndUpdate({ _id: req.user._id }, updateData, null, (err, value) => {
@@ -240,29 +240,29 @@ module.exports.findOneAndUpdate = function (req, res) {
     });
 };
 
-module.exports.updateManyUsers = function (req, res) {
-    let usersId = req.query.id; // Récupère les IDs des utilisateurs à mettre à jour depuis le corps de la requête
-    const updateData = req.body; // Récupère les données mises à jour depuis le corps de la requête
-    if (usersId && !Array.isArray(usersId)) {
-        usersId = [usersId]
-    }
-    req.log.info("Modifier plusieurs utilisateurs")
-    UserService.updateManyUsers(usersId, updateData, null, (err, value) => {
-        if (err && err.type_error == "no-found") {
-            res.statusCode = 404;
-            res.send(err);
-        } else if (err && err.type_error == "no-valid") {
-            res.statusCode = 405;
-            res.send(err);
-        } else if (err && (err.type_error == "validator" || err.type_error == "duplicate")) {
-            res.statusCode = 405;
-            res.send(err);
-        } else {
-            res.statusCode = 200;
-            res.send(value);
-        }
-    });
-};
+// module.exports.updateManyUsers = function (req, res) {
+//     let usersId = req.query.id; // Récupère les IDs des utilisateurs à mettre à jour depuis le corps de la requête
+//     const updateData = req.body; // Récupère les données mises à jour depuis le corps de la requête
+//     if (usersId && !Array.isArray(usersId)) {
+//         usersId = [usersId]
+//     }
+//     req.log.info("Modifier plusieurs utilisateurs")
+//     UserService.updateManyUsers(usersId, updateData, null, (err, value) => {
+//         if (err && err.type_error == "no-found") {
+//             res.statusCode = 404;
+//             res.send(err);
+//         } else if (err && err.type_error == "no-valid") {
+//             res.statusCode = 405;
+//             res.send(err);
+//         } else if (err && (err.type_error == "validator" || err.type_error == "duplicate")) {
+//             res.statusCode = 405;
+//             res.send(err);
+//         } else {
+//             res.statusCode = 200;
+//             res.send(value);
+//         }
+//     });
+// };
 
 // La fonction permet de supprimer un utilisateur.
 module.exports.deleteOneUser = function (req, res) {
