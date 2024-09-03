@@ -178,7 +178,7 @@ describe("POST - /settings", () => {
     describe("GET - /setting/:id", () => {
         it("Chercher un setting valide. - S", (done) => {
             chai.request(server).get(`/setting/${userConnect._id}`).auth(token, { type: "bearer" }).end((err, res) => {
-                console.log(userConnect._id)
+                // console.log(userConnect._id)
                 expect(res).to.have.status(200);
                 expect(res.body).to.be.an('object');
                 expect(res.body).to.have.property('_id');

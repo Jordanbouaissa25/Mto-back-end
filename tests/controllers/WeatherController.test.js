@@ -58,7 +58,7 @@ describe("POST - /weather", () => {
         });
     });
     it("Ajouter un weather incorrect. (Sans humidity) - E", (done) => {
-        chai.request(server).post('/weather').query({ city: "Besançon" }).auth(token, { type: "bearer" }).end((err, res) => {
+        chai.request(server).post('/weather').query({ humidity: "" }).auth(token, { type: "bearer" }).end((err, res) => {
             expect(res).to.have.status(405)
             done()
         })

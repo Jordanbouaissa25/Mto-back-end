@@ -14,35 +14,40 @@ User.createIndexes()
 
 module.exports.addOneUser = async function (user, options, callback) {
   try {
-    const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
-    if (user && user.password)
-      user.password = await bcrypt.hash(user.password, salt)
-    var new_user = new User(user);
-    var errors = new_user.validateSync();
-    if (errors) {
-      errors = errors['errors'];
-      var text = Object.keys(errors).map((e) => {
-        return errors[e]['properties']['message'];
-      }).join(' ');
-      var fields = _.transform(Object.keys(errors), function (result, value) {
-        result[value] = errors[value]['properties']['message'];
-      }, {});
-      var err = {
-        msg: text,
-        fields_with_error: Object.keys(errors),
-        fields: fields,
-        type_error: "validator"
-      };
-      callback(err);
+    if (user.password.length >= 8) {
+
+      const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+      if (user && user.password)
+        user.password = await bcrypt.hash(user.password, salt)
+      var new_user = new User(user);
+      var errors = new_user.validateSync();
+      if (errors) {
+        errors = errors['errors'];
+        var text = Object.keys(errors).map((e) => {
+          return errors[e]['properties']['message'];
+        }).join(' ');
+        var fields = _.transform(Object.keys(errors), function (result, value) {
+          result[value] = errors[value]['properties']['message'];
+        }, {});
+        var err = {
+          msg: text,
+          fields_with_error: Object.keys(errors),
+          fields: fields,
+          type_error: "validator"
+        };
+        callback(err);
+      } else {
+        await new_user.save();
+        SettingService.addOneSetting({
+          setting_temperature: "°C",
+          setting_wind: "km/h",
+          user_id: new_user._id
+        }, null, function (err, value) {
+          callback(null, new_user.toObject());
+        })
+      }
     } else {
-      await new_user.save();
-      SettingService.addOneSetting({
-        setting_temperature: "°C",
-        setting_wind: "km/h",
-        user_id: new_user._id
-      }, null, function (err, value) {
-        callback(null, new_user.toObject());
-      })
+      callback({ msg: "le mot de passe doit faire 8 caractères minimum", type_error: "no-valid" })
     }
   } catch (error) {
     if (error.code === 11000) { // Erreur de duplicité

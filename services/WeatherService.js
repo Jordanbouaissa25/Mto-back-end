@@ -11,8 +11,9 @@ var Weather = mongoose.model('Weather', WeatherSchema)
 Weather.createIndexes();
 
 module.exports.addOneWeather = async function (city, user_id, options, callback) {
+    // console.log("ok")
     try {
-        const responseOfApi = await http.get(`?q=${city}&appid=${appid}`)
+        const responseOfApi = await http.get(`?q=${city}&units=metric&appid=${appid}`)
         const weather = {
             data_id: responseOfApi.data.id,
             user_id: user_id,
@@ -26,6 +27,9 @@ module.exports.addOneWeather = async function (city, user_id, options, callback)
             temp: responseOfApi.data.main.temp,
             humidity: responseOfApi.data.main.humidity,
             wind: responseOfApi.data.wind.speed,
+            description: responseOfApi.data.weather[0].description,
+            icon: responseOfApi.data.weather[0].icon,
+            country: responseOfApi.data.sys.country
         }
         var new_weather = new Weather(weather);
         var errors = new_weather.validateSync();
@@ -80,6 +84,7 @@ module.exports.addManyWeathers = async function (cities, user_id, options, callb
     for (const city of cities) {
         try {
             const responseOfApi = await http.get(`?q=${city}&appid=${appid}`);
+            // console.log(responseOfApi)
             const weather = {
                 data_id: responseOfApi.data.id,
                 user_id: user_id,

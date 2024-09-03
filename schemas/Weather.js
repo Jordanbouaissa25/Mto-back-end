@@ -13,7 +13,6 @@ const weatherSchema = new Schema({
     city: {
         type: String,
         required: true,
-        unique: true
     },
     temp: {
         type: Number,
@@ -50,6 +49,18 @@ const weatherSchema = new Schema({
     visibility: {
         type: Number,
         required: true
+    },
+    description: {
+        type: String,
+        required: false
+    },
+    icon: {
+        type: String,
+        required: false
+    },
+    country: {
+        type: String,
+        required: false
     }
 })
 

@@ -16,7 +16,6 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true,
-        minlength: 8
     },
     firstName: {
         type: String,
@@ -38,7 +37,8 @@ const userSchema = new Schema({
     city: {
         type: String,
         required: false
-    }
+    },
+    token: String
 });
 
 // Création du modèle User à partir du schéma

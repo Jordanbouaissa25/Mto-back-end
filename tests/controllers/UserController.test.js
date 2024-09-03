@@ -16,8 +16,8 @@ chai.use(chaiHttp)
 describe("POST - /register", () => {
     it("Ajouter un utilisateur . - S", (done) => {
         chai.request(server).post('/register').auth(token, { type: "bearer" }).send({
-            email: "testeur@gmail.com",
-            password: "01234567",
+            email: "testeur2@gmail.com",
+            password: "012234567",
         }).end((err, res) => {
             expect(res).to.have.status(201)
             users.push(res.body)
@@ -26,16 +26,17 @@ describe("POST - /register", () => {
     })
     it("Ajouter un utilisateur incorrect. (Sans password) - E", (done) => {
         chai.request(server).post('/register').auth(token, { type: "bearer" }).send({
-            email: 'lutfu.us@gmil.com',
+            email: 'blablacar@gmail.com',
+            password: ""
         }).end((err, res) => {
-            // console.log(res)
+            // console.log(err, res.body)
             expect(res).to.have.status(405)
             done()
         })
     })
     it("Ajouter un utilisateur incorrect. (Avec email déjà existant) - E", (done) => {
         chai.request(server).post('/register').auth(token, { type: "bearer" }).send({
-            email: "testeur@gmail.com",
+            email: "testeur2@gmail.com",
             password: "01234567"
         }).end((err, res) => {
             expect(res).to.have.status(405)
@@ -58,9 +59,10 @@ describe("POST - /login", () => {
     it("Connexion utilisateur - S", (done) => {
         // console.log(users)
         chai.request(server).post('/login').send({
-            username: "testeur@gmail.com",
-            password: "01234567"
+            username: "testeur2@gmail.com",
+            password: "012234567"
         }).end((err, res) => {
+            // console.log(err, res.body)
             res.should.have.status(200)
             token = res.body.token
             done()
@@ -68,7 +70,7 @@ describe("POST - /login", () => {
     })
     it("Connexion utilisateur - Identifiant incorrect - E", (done) => {
         chai.request(server).post('/login').send({
-            username: "email_incorrect",
+            username: "sksfksl@gmail.com",
             password: "01234567"
         }).end((err, res) => {
             res.should.have.status(405)
@@ -90,11 +92,11 @@ describe("POST - /users", () => {
     it("Ajouter des utilisateurs. -S", (done) => {
         chai.request(server).post('/users').auth(token, { type: "bearer" }).send([{
             email: "jordanbouaissa2saa5@gmail.com",
-            password: "5644959"
+            password: "56449ksfs59"
         },
         {
             email: "jordanbouaissa2598@gmail.com",
-            password: "okiàqkjnd"
+            password: "okisfkgsqkjnd"
         }]).end((err, res) => {
             //   console.log(res.body)
             users = [...users, ...res.body]
@@ -128,11 +130,11 @@ describe("POST - /users", () => {
 
     it("Ajouter des utilisateurs incorrect. (Avec un email existant) - E", (done) => {
         chai.request(server).post('/users').auth(token, { type: "bearer" }).send([{
-            email: "testeur@gmail.com",
+            email: "testeur2@gmail.com",
             password: "ok"
         },
         {
-            email: "jorduaissa2lsdl5@gmail.com",
+            email: "jordanbouaissa25@gmail.com",
             password: "içekdijçoqszd"
         }]).end((err, res) => {
             // console.log(err, res.body)
@@ -249,7 +251,7 @@ describe("GET - /users_by_filters", () => {
             .end((err, res) => {
                 res.should.have.status(200)
                 expect(res.body.results).to.be.an('array')
-                expect(res.body.count).to.be.equal(4)
+                expect(res.body.count).to.be.equal(6)
                 done()
             })
     })
@@ -320,14 +322,14 @@ describe("PUT - /user", () => {
             .put('/user')
             .auth(token, { type: "bearer" })
             .send({
-                email: "edouard.dupont@gmail.com",
+                email: "jordanbousa25@gmail.com",
                 password: "NewSecurePassword123"
             })
             .end((err, res) => {
                 // console.log(res.body)
                 res.should.have.status(200);
                 res.body.should.be.an('object');
-                res.body.should.have.property('email').eql('edouard.dupont@gmail.com');
+                res.body.should.have.property('email').eql('jordanbousa25@gmail.com');
                 done();
             });
     });

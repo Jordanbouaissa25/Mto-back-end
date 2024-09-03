@@ -12,7 +12,7 @@ module.exports.loginUser = function (req, res, next) {
         else {
             req.logIn(user, async function (err) {
                 if (err) {
-                    console.log(err)
+                    // console.log(err)
                     res.statusCode = 500
                     return res.send({ msg: "Problème d'authentification sur le serveur.", type_error: "internal" })
                 }
@@ -59,6 +59,9 @@ module.exports.addOneUser = function (req, res) {
             res.send(err)
         }
         else if (err && err.type_error == "duplicate") {
+            res.statusCode = 405
+            res.send(err)
+        } else if (err && err.type_error == "no-valid") {
             res.statusCode = 405
             res.send(err)
         }

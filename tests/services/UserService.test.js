@@ -9,8 +9,8 @@ var users = []
 describe("addOneUser", () => {
     it("Utilisateur correct. - S", (done) => {
         var user = {
-            email: "edouard.dupont@gmail.com",
-            password: "coucou"
+            email: "jordanbouaissa25@gmail.com",
+            password: "12345678"
         };
         UserService.addOneUser(user, null, function (err, value) {
             // console.log(err, value)
@@ -37,20 +37,20 @@ describe("addOneUser", () => {
             done()
         });
     });
-    // it("Utilisateur correct avec un mot de passe avec + de 8 charactères. - S", () => {
-    //     var password_valid = {
-    //         email: "Testeur@gmail.com",
-    //         password: "Jordan09072001"
-    //     };
-    //     UserService.addOneUser(password_valid, null, function (err, value) {
-    //         console.log(err, value)
-    //         expect(value).to.be.a("object");
-    //         expect(value).to.haveOwnProperty("_id");
-    //         password_valid = value._id;
-    //         users.push(value)
-    //         done()
-    //     })
-    // })
+    it("Utilisateur correct avec un mot de passe avec + de 8 charactères. - S", () => {
+        var password_valid = {
+            email: "testeur@gmail.com",
+            password: "12345678"
+        };
+        UserService.addOneUser(password_valid, null, function (err, value) {
+            // console.log(err, value)
+            expect(value).to.be.a("object");
+            expect(value).to.haveOwnProperty("_id");
+            password_valid = value._id;
+            users.push(value)
+            done()
+        })
+    })
 });
 
 describe("addManyUsers", () => {
@@ -62,12 +62,10 @@ describe("addManyUsers", () => {
             },
             {
                 email: "edouard.dupont@gmail.com",
-                testing: true,
                 password: "ioj"
             },
             {
                 email: "edouard.dupont@gmail.com",
-                testing: true,
                 password: "oaj"
             },
             {
@@ -77,6 +75,7 @@ describe("addManyUsers", () => {
         ];
 
         UserService.addManyUsers(users_tab_error, null, function (err, value) {
+            // console.log(err, value)
             done();
         });
     });
@@ -155,11 +154,12 @@ describe("findOneUserById", () => {
 });
 
 describe("findManyUsers", () => {
-    it("Retourne 3 utilisateurs sur les 7. -S", (done) => {
+    it("Retourne 3 utilisateurs sur les 9. -S", (done) => {
         UserService.findManyUsers(null, 1, 3, null, function (err, value) {
+            // console.log(err, value)
             expect(value).to.haveOwnProperty("count")
             expect(value).to.haveOwnProperty("results")
-            expect(value["count"]).to.be.equal(4)
+            expect(value["count"]).to.be.equal(6)
             expect(value["results"]).lengthOf(3)
             expect(err).to.be.null
             done()
@@ -189,7 +189,7 @@ describe("updateOneUser", () => {
     it("Modifier un utilisateur correct. - S", (done) => {
         UserService.updateOneUser(
             id_user_valid,
-            { email: "edouard.dupont@gmail.com", password: "123456789" }, null,
+            { email: "jordanbouaissa25@gmail.com", password: "123456789" }, null,
             function (err, value) {
                 // console.log(err, value)
                 expect(value).to.be.a("object");
