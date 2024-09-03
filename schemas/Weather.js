@@ -61,6 +61,14 @@ const weatherSchema = new Schema({
     country: {
         type: String,
         required: false
+    },
+    timezone: {
+        type: Number,
+        required: false
+    },
+    name: {
+        type: String,
+        required: false
     }
 })
 
