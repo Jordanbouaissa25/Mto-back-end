@@ -69,6 +69,7 @@ describe("POST - /setting", () => {
             setting_temperature: "°C",
             user_id: rdm_user(tab_id_users)
         }).end((err, res) => {
+            // console.log(err, res.body)
             expect(res).to.have.status(405)
             done()
         })
@@ -78,6 +79,7 @@ describe("POST - /setting", () => {
             setting_wind: "km/p",
             setting_temperature: "",
         }).end((err, res) => {
+            // console.log(res.body)
             expect(res).to.have.status(405)
             done()
         })

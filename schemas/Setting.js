@@ -3,10 +3,6 @@ const Schema = mongoose.Schema;
 
 // Définition du schéma des paramètres
 const settingSchema = new Schema({
-    setting_id: {
-        type: Schema.Types.ObjectId,
-        required: false
-    },
     user_id: {
         type: Schema.Types.ObjectId,
         required: false,

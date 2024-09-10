@@ -49,17 +49,20 @@ function rdm_user(tab) {
 describe("addOneSetting", () => {
     it("Création des utilisateurs fictif", (done) => {
         UserService.addManyUsers(users, null, function (err, value) {
+            // console.log(err)
             tab_id_users = _.map(value, "_id")
             done()
         })
     })
     it("Setting correct. - S", (done) => {
+        // console.log(tab_id_users)
         var setting = {
             setting_temperature: "°C",
             setting_wind: "km/h",
             user_id: tab_id_users[0]._id
         };
         SettingService.addOneSetting(setting, null, function (err, value) {
+            console.log(err, value)
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
             id_setting_valid = value._id;
@@ -73,7 +76,7 @@ describe("addOneSetting", () => {
             setting_temperature: "°Z",
             user_id: rdm_user(tab_id_users)
         };
-        SettingService.addOneSetting(setting_no_valid, function (err, value) {
+        SettingService.addOneSetting(setting_no_valid, null, function (err, value) {
             expect(err).to.haveOwnProperty("msg");
             expect(err).to.haveOwnProperty("fields_with_error").with.lengthOf(1);
             expect(err).to.haveOwnProperty("fields");
@@ -166,7 +169,7 @@ describe("findOneSetting", () => {
 describe("findOneSettingById", () => {
     it("Chercher un setting existant correct. - S", (done) => {
         SettingService.findOneSettingById(tab_id_users[0], null, function (err, value) {
-            // console.log(err, value)
+            console.log(err, value)
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
             expect(value).to.haveOwnProperty("setting_temperature");

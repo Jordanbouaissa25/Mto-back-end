@@ -249,6 +249,7 @@ describe("GET - /users_by_filters", () => {
     it("Chercher plusieurs utilisateurs avec une query vide. -S", (done) => {
         chai.request(server).get('/users_by_filters').auth(token, { type: "bearer" })
             .end((err, res) => {
+                // console.log(err, res.body)
                 res.should.have.status(200)
                 expect(res.body.results).to.be.an('array')
                 expect(res.body.count).to.be.equal(6)
@@ -445,14 +446,14 @@ describe("PUT - /userResPassword", () => {
             .put('/userResPassword')
             .auth(token, { type: "bearer" })
             .send({
-                email: "edouard.dupont@gmail.com",
-                newPassword: "ValidPass123"
+                email: "jordanbouaissa25@gmail.com",
+                newPassword: "516492179279"
             })
             .end((err, res) => {
-                // console.log(res.body)
+                // console.log(err, res.body)
                 res.should.have.status(200);
                 res.body.should.be.an('object');
-                res.body.should.have.property('email').eql("edouard.dupont@gmail.com");
+                res.body.should.have.property('email').eql("jordanbouaissa25@gmail.com");
                 done();
             });
     });

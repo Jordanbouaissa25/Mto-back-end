@@ -163,6 +163,7 @@ app.delete("/weather/:id", DatabaseMiddleware.checkConnexion, passport.authentic
 // Création de l'endpoint /weathers pour la suppression de plusieurs settings
 app.delete("/weathers", DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), WeatherController.deleteManyWeathers);
 
+
 // Démarrage de notre serveur sur le port choisi
 app.listen(Config.port, () => {
   Logger.info(`Serveur démarré dans le port ${Config.port}.`)

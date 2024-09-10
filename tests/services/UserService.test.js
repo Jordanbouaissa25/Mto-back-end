@@ -9,8 +9,8 @@ var users = []
 describe("addOneUser", () => {
     it("Utilisateur correct. - S", (done) => {
         var user = {
-            email: "jordanbouaissa25@gmail.com",
-            password: "12345678"
+            email: "jordanbouaissa@gmail.com",
+            password: "09072001"
         };
         UserService.addOneUser(user, null, function (err, value) {
             // console.log(err, value)
@@ -37,7 +37,7 @@ describe("addOneUser", () => {
             done()
         });
     });
-    it("Utilisateur correct avec un mot de passe avec + de 8 charactères. - S", () => {
+    it("Utilisateur correct avec un mot de passe avec + de 8 charactères. - S", (done) => {
         var password_valid = {
             email: "testeur@gmail.com",
             password: "12345678"
@@ -82,22 +82,23 @@ describe("addManyUsers", () => {
     it("Utilisateurs à ajouter, valide. - S", (done) => {
         var users_tab = [
             {
-                email: "edouard.dupont3@gmail.com",
+                email: "edouard.dupo3@gmail.com",
                 password: "oisdoqsd"
             },
             {
-                email: "edouard.dupont1@gmail.com",
+                email: "edouard.dupon@gmail.com",
                 testing: true,
                 password: "oizjdoiqzeji"
             },
             {
-                email: "edouard.dupont2@gmail.com",
+                email: "edouard.dup2@gmail.com",
                 testing: true,
                 password: "oiazjodilpmqzsks"
             },
         ];
 
         UserService.addManyUsers(users_tab, null, function (err, value) {
+            // console.log(err, value)
             tab_id_users = _.map(value, "_id");
             users = [...value, ...users]
             expect(value).lengthOf(3);
@@ -189,7 +190,7 @@ describe("updateOneUser", () => {
     it("Modifier un utilisateur correct. - S", (done) => {
         UserService.updateOneUser(
             id_user_valid,
-            { email: "jordanbouaissa25@gmail.com", password: "123456789" }, null,
+            { email: "jordanbouaissa@gmail.com", password: "65165165" }, null,
             function (err, value) {
                 // console.log(err, value)
                 expect(value).to.be.a("object");

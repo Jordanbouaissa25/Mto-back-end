@@ -27,8 +27,8 @@ module.exports.addOneSetting = async function (setting, options, callback) {
                 type_error: "validator"
             };
             callback(err);
+            // console.log(err)
         } else {
-            // console.log(new_setting)
             await new_setting.save();
             callback(null, new_setting.toObject());
         }

@@ -14,7 +14,7 @@ module.exports.addOneWeather = async function (city, user_id, options, callback)
     // console.log("ok")
     try {
         const responseOfApi = await http.get(`?q=${city}&units=metric&appid=${appid}`)
-        console.log(responseOfApi.data)
+        // console.log(responseOfApi.data)
         const weather = {
             data_id: responseOfApi.data.id,
             user_id: user_id,

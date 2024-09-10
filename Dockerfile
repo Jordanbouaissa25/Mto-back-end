@@ -1,16 +1,17 @@
-# Utiliser une image Node.js officielle
-FROM node:20.15.0-alpine AS 
-# Créer un répertoire de travail
+FROM node:20.15.0-alpine AS dependencies
+USER node
 WORKDIR /app
-# Copier les fichiers package.json et package-lock.json
-COPY package*.json ./
-# Installer les dépendances
+COPY --chown=node:node package*.json ./
 RUN npm ci
-# Copier le reste de l’application
-COPY . .
-# Exposer le port de l’application
-EXPOSE 3000
-# Démarrer l’application
-CMD ["node", "server.js"]
 
-FROM development AS test
+FROM dependencies AS development
+COPY --chown=node:node ./ ./
+COPY --chown=node:node scripts/install.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/install.sh
+EXPOSE 3001
+ENTRYPOINT ["install.sh"]
+CMD ["npm", "start"]
+
+FROM dependencies AS test
+COPY --chown=node:node ./ ./
+CMD ["node", "server"]

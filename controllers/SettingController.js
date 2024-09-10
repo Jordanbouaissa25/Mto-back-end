@@ -5,7 +5,6 @@ const LoggerHttp = require('../utils/logger').http
 module.exports.addOneSetting = function (req, res) {
     req.log.info("Création d'un Setting");
     SettingService.addOneSetting(req.body, null, function (err, value) {
-
         if (err && err.type_error == "no-found") {
             res.statusCode = 404;
             res.send(err);

@@ -1,31 +1,40 @@
 version: '3.8'
+
 services:
-  api:
-    build: "."
-    container_name: node-api
-    environment:
-      - PORT=3001
-      - SECRET_KEY=MY_SECRET_KEY_HASH
-      - SECRET_COOKIE=COOKIE
-      - URL_DATABASE=mongodb://mongodb:27017
-    ports:
-      - "3000:3000"
-    networks:
-      - app-network
-    depends_on:
-      - mongodb
-    restart: always
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
+  api-meteo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: api-meteo
     volumes:
-    - ./mongo-data:/data/db
+      - .:/app
+    environment:
+      - PORT=${PORT}
+      - SECRET_KEY=${SECRET_KEY}
+      - SECRET_COOKIE=${SECRET_COOKIE}
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - ${PORT}:${PORT}
     networks:
-      - app-network
+      - meteo-network
+    depends_on:
+      - mongodb-meteo
+    restart: always
+
+  mongodb-meteo:
+    image: mongo:latest
+    container_name: mongodb-meteo
+    volumes:
+      - ./mongo-data:/data/db
+    networks:
+      - meteo-network
     expose:
-      - "27017"
+      - ${PORT_BDD}
+
 networks:
-  app-network:
+  meteo-network:
     driver: bridge
+
 volumes:
-    mongo-data:
+  mongo-data:

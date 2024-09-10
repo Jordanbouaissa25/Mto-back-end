@@ -10,8 +10,6 @@ const SALT_WORK_FACTOR = 10;
 
 var User = mongoose.model('User', UserSchema)
 
-User.createIndexes()
-
 module.exports.addOneUser = async function (user, options, callback) {
   try {
     if (user.password.length >= 8) {
