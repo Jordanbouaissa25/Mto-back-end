@@ -35,6 +35,72 @@ module.exports.addManySettings = function (req, res) {
     });
 };
 
+/**
+ * @swagger
+ * /addManySettings:
+ *  post:
+ *    summary: Ajouter plusieurs Settings
+ *    description: Ajoute plusieurs Settings dans le système en une seule requête.
+ *    tags:
+ *      - Settings
+ *    requestBody:
+ *       required: true
+ *       content:
+ *          application/json:
+ *              schema:
+ *                  type: array
+ *                  items:
+ *                    type: object
+ *                    properties:
+ *                      name:
+ *                        type: string
+ *                        description: Nom du Setting
+ *                        example: "exampleSetting"
+ *                      value:
+ *                        type: string
+ *                        description: Valeur du Setting
+ *                        example: "exampleValue"
+ *                  minItems: 1
+ *    responses:
+ *       201:
+ *          description: Settings créés avec succès
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    id:
+ *                      type: string
+ *                      description: Identifiant du Setting créé
+ *                      example: "12345"
+ *                    name:
+ *                      type: string
+ *                      description: Nom du Setting
+ *                      example: "exampleSetting"
+ *                    value:
+ *                      type: string
+ *                      description: Valeur du Setting
+ *                      example: "exampleValue"
+ *       405:
+ *          description: Erreur de validation
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  type_error:
+ *                    type: string
+ *                    example: "validator"
+ *                  message:
+ *                    type: string
+ *                    example: "Erreur de validation"
+ *       500:
+ *          description: Erreur interne du serveur
+ */
+
+
 // La fonction permet de chercher un Setting par ID.
 module.exports.findOneSettingById = function (req, res) {
     req.log.info("Chercher un Setting");

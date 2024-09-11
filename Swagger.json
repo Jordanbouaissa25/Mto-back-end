@@ -2,7 +2,7 @@
     "swaggerDefinition": {
         "openapi": "3.0.0",
         "info": {
-            "title": "Oresto - Booking app restaurant",
+            "title": "WorldWeather - World app meteo",
             "version": "1.0.0",
             "description": "API documentation"
         },
@@ -21,53 +21,50 @@
             "schemas": {
                 "User": {
                     "type": "object",
-                    "required": ["firstname", "lastname", "email", "phone_number", "password"],
+                    "required": [ "email", "password"],
                     "properties": {
-                        "firstname": {
-                            "type": "string",
-                            "description": "The user's firstname",
-                            "example": "John"
-                        },
-                        "lastname": {
-                            "type": "string",
-                            "description": "The user's lastname",
-                            "example": "Doe"
-                        },
                         "email": {
-                            "type": "string",
-                            "description": "The user's email",
-                            "example": "johndoe@example.com"
-                        },
-                        "phone_number": {
-                            "type": "string",
-                            "description": "The user's phone number",
-                            "example": "+1234567890"
+                            "type": "String",
+                            "unique": true
                         },
                         "password": {
-                            "type": "string",
-                            "description": "The user's password",
-                            "example": "secret"
+                            "type": "String"
+                        },
+                        "firstName": {
+                            "type": "String"
+                        },
+                        "lastName": {
+                            "type": "String"
+                        },
+                        "location": {
+                            "type": "String"
+                        },
+                        "unit": {
+                            "type": "String"
+                        },
+                        "wind_speed": {
+                            "type": "String"
+                        },
+                        "city": {
+                            "type": "String"
                         },
                         "token": {
-                            "type": "string",
-                            "description": "An optional token for the user",
-                            "example": "somerandomtoken"
+                            "type":"String"
                         }
                     }
                 },
-                "Login": {
+                "Setting": {
                     "type": "object",
-                    "required": ["email", "password"],
+                    "required": ["setting_temperature", "setting_wind"],
                     "properties": {
-                        "email": {
-                            "type": "string",
-                            "description": "The user's email",
-                            "example": "johndoe@example.com"
+                        "setting_temperature": {
+                            "type": "String",
+                            "enum": ["°C", "°F"]
+                            
                         },
-                        "password": {
-                            "type": "string",
-                            "description": "The user's password",
-                            "example": "secret"
+                        "setting_wind": {
+                            "type": "String",
+                            "enum": ["km/h", "mi/h"]
                         }
                     }
                 },

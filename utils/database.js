@@ -12,7 +12,7 @@ mongoose.connection.on('close', () => Logger.info("Connection à la base de donn
 
 
 
-mongoose.connect(`${Config.url_database}/${ process.env.npm_lifecycle_event == 'test' ? "CDA_SERVER_TEST" : "CDA_SERVER_PROD"}`, {
+mongoose.connect(`${Config.url_database}/${process.env.npm_lifecycle_event == 'test' ? "CDA_SERVER_TEST" : "CDA_SERVER_PROD"}`, {
     useUnifiedTopology: true,
 })
 
