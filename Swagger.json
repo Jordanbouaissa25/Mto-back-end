@@ -68,19 +68,54 @@
                         }
                     }
                 },
-                "Register": {
+                "Weather": {
                     "type": "object",
-                    "required": ["firstname", "lastname", "email", "phone_number", "password"],
+                    "required": ["sunset", "sunrise", "wind", "humidity", "temp", "city", "lon", "lat", "pressure", "visibility"],
                     "properties": {
-                        "email": {
-                            "type": "string",
-                            "description": "The user's email",
-                            "example": "johndoe@example.com"
+                        "city": {
+                            "type": "String"
                         },
-                        "password": {
-                            "type": "string",
-                            "description": "The user's password",
-                            "example": "secret"
+                        "temp": {
+                            "type": "Number"
+                        },
+                        "humidity": {
+                            "type": "Number"
+                        },
+                        "wind": {
+                            "type": "String"
+                        },
+                        "sunrise": {
+                            "type": "Number"
+                        },
+                        "sunset": {
+                            "type": "Number"
+                        },
+                        "lon": {
+                            "type": "Number"
+                        },
+                        "lat": {
+                            "type": "Number"
+                        },
+                        "pressure": {
+                            "type": "Number"
+                        },
+                        "visibility": {
+                            "type": "Number"
+                        },
+                        "description": {
+                            "type": "String"
+                        },
+                        "icon": {
+                            "type": "String"
+                        },
+                        "country": {
+                            "type": "String"
+                        },
+                        "timezone": {
+                            "type": "Number"
+                        },
+                        "name": {
+                            "type": "String"
                         }
                     }
                 }
