@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const Logger = require('./logger').pino
 const Config = require('../config')
+require('dotenv').config()
+
 
 mongoose.connection.on('connected', () => Logger.info("Connecté à la base de donnée."));
 mongoose.connection.on('open', () => Logger.info("Connection ouverte à la base de donnée."));
@@ -12,7 +14,6 @@ mongoose.connection.on('close', () => Logger.info("Connection à la base de donn
 
 
 
-mongoose.connect(`${Config.url_database}/${process.env.npm_lifecycle_event == 'test' ? "CDA_SERVER_TEST" : "CDA_SERVER_PROD"}`, {
-    useUnifiedTopology: true,
-})
+mongoose.connect(`${process.env.npm_lifecycle_event == 'test' ? process.env.URL_DATABASE_TEST : process.env.URL_DATABASE}/${process.env.npm_lifecycle_event == 'test' ? "CDA_SERVER_TEST" : "CDA_SERVER_PROD"}`)
 
+// console.log(mongoose.connection.readyState)

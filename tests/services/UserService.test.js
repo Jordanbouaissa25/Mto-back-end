@@ -13,7 +13,6 @@ describe("addOneUser", () => {
             password: "09072001"
         };
         UserService.addOneUser(user, null, function (err, value) {
-            // console.log(err, value)
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
             id_user_valid = value._id;

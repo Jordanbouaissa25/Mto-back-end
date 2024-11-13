@@ -62,7 +62,7 @@ describe("addOneSetting", () => {
             user_id: tab_id_users[0]._id
         };
         SettingService.addOneSetting(setting, null, function (err, value) {
-            console.log(err, value)
+            // console.log(err, value)
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
             id_setting_valid = value._id;

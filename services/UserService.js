@@ -36,6 +36,7 @@ module.exports.addOneUser = async function (user, options, callback) {
         callback(err);
       } else {
         await new_user.save();
+        // console.log("ok")
         SettingService.addOneSetting({
           setting_temperature: "°C",
           setting_wind: "km/h",
