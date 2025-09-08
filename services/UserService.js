@@ -17,6 +17,7 @@ module.exports.addOneUser = async function (user, options, callback) {
       const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
       if (user && user.password)
         user.password = await bcrypt.hash(user.password, salt)
+      // console.log(user)
       var new_user = new User(user);
       var errors = new_user.validateSync();
       if (errors) {

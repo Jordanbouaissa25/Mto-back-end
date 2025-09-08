@@ -24,4 +24,4 @@ else
     echo "mongo-data exist, skipping mongo-data folder creation..."
 fi
 
-exec "$@"
+exec npm start

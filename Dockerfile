@@ -14,4 +14,4 @@ CMD ["npm", "start"]
 
 FROM dependencies AS test
 COPY --chown=node:node ./ ./
-CMD ["node", "server"]
+CMD ["npm", "run", "test"]

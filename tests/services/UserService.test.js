@@ -9,8 +9,8 @@ var users = []
 describe("addOneUser", () => {
     it("Utilisateur correct. - S", (done) => {
         var user = {
-            email: "jordanbouaissa@gmail.com",
-            password: "09072001"
+            email: "jordanbouaissa25@gmail.com",
+            password: "09072001sdsds"
         };
         UserService.addOneUser(user, null, function (err, value) {
             expect(value).to.be.a("object");
@@ -18,6 +18,7 @@ describe("addOneUser", () => {
             id_user_valid = value._id;
             users.push(value)
             done()
+            console.log(err, value)
         });
     });
     it("Utilisateur incorrect. (Sans email) - E", (done) => {
@@ -38,8 +39,8 @@ describe("addOneUser", () => {
     });
     it("Utilisateur correct avec un mot de passe avec + de 8 charactères. - S", (done) => {
         var password_valid = {
-            email: "testeur@gmail.com",
-            password: "12345678"
+            email: "testeur2@gmail.com",
+            password: "123456789"
         };
         UserService.addOneUser(password_valid, null, function (err, value) {
             // console.log(err, value)

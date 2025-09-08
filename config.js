@@ -1,5 +1,5 @@
 module.exports.port = process.env.PORT || 3001;
 module.exports.secret_key = process.env.SECRET_KEY || "MY_SECRET_KEY_HASH";
 module.exports.secret_cookie = process.env.SECRET_COOKIE || "COOKIE";
-module.exports.url_database = process.env.URL_DATABASE || "mongodb://mongodb-meteo";
-module.exports.appid = "91fbde8f0b5ad7adc0d2262673e3bd6c"
+module.exports.url_database = process.env.URL_DATABASE || "mongodb://127.0.0.1:27017";
+module.exports.appid = process.env.appid || "91fbde8f0b5ad7adc0d2262673e3bd6c";
