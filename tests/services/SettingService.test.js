@@ -169,7 +169,7 @@ describe("findOneSetting", () => {
 describe("findOneSettingById", () => {
     it("Chercher un setting existant correct. - S", (done) => {
         SettingService.findOneSettingById(tab_id_users[0], null, function (err, value) {
-            console.log(err, value)
+            // console.log(err, value)
             expect(value).to.be.a("object");
             expect(value).to.haveOwnProperty("_id");
             expect(value).to.haveOwnProperty("setting_temperature");

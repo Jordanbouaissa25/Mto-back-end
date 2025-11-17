@@ -9,7 +9,7 @@ var users = []
 describe("addOneUser", () => {
     it("Utilisateur correct. - S", (done) => {
         var user = {
-            email: "jordanbouaissa25@gmail.com",
+            email: "jordanbouaissa257@gmail.com",
             password: "09072001sdsds"
         };
         UserService.addOneUser(user, null, function (err, value) {
@@ -17,8 +17,8 @@ describe("addOneUser", () => {
             expect(value).to.haveOwnProperty("_id");
             id_user_valid = value._id;
             users.push(value)
+            // console.log(err, value)
             done()
-            console.log(err, value)
         });
     });
     it("Utilisateur incorrect. (Sans email) - E", (done) => {

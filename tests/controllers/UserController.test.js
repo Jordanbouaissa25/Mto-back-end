@@ -16,9 +16,10 @@ chai.use(chaiHttp)
 describe("POST - /register", () => {
     it("Ajouter un utilisateur . - S", (done) => {
         chai.request(server).post('/register').auth(token, { type: "bearer" }).send({
-            email: "testeur2@gmail.com",
+            email: "testeur23@gmail.com",
             password: "012234567",
         }).end((err, res) => {
+             console.log(err)
             expect(res).to.have.status(201)
             users.push(res.body)
             done()
@@ -59,7 +60,7 @@ describe("POST - /login", () => {
     it("Connexion utilisateur - S", (done) => {
         // console.log(users)
         chai.request(server).post('/login').send({
-            username: "testeur2@gmail.com",
+            username: "testeur23@gmail.com",
             password: "012234567"
         }).end((err, res) => {
             // console.log(err, res.body)

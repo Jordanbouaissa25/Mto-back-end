@@ -1,43 +1,43 @@
-# version: '3.8'
+version: '3.8'
 
-# services:
-#   api-meteo:
-#     platform: ${DOCKER_PLATFORM}
-#     build:
-#       context: .
-#       dockerfile: Dockerfile
-#       target: development
-#     container_name: api-meteo
-#     volumes:
-#       - .:/app
-#     environment:
-#       - PORT=${PORT}
-#       - SECRET_KEY=${SECRET_KEY}
-#       - SECRET_COOKIE=${SECRET_COOKIE}
-#       - CHOKIDAR_USEPOLLING=true
-#     ports:
-#       - ${PORT}:${PORT}
-#     networks:
-#       - meteo-network
-#     depends_on:
-#       - mongodb-meteo
-#     restart: always
+services:
+  api-meteo:
+    platform: ${DOCKER_PLATFORM}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: api-meteo
+    volumes:
+      - .:/app
+    environment:
+      - PORT=${PORT}
+      - SECRET_KEY=${SECRET_KEY}
+      - SECRET_COOKIE=${SECRET_COOKIE}
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - meteo-network
+    depends_on:
+      - mongodb-meteo
+    restart: always
 
-#   mongodb-meteo:
-#     image: mongo:latest
-#     container_name: mongodb-meteo
-#     volumes:
-#       - ./mongo-data:/data/db
-#     networks:
-#       - meteo-network
-#     ports:
-#       - ${PORT_BDD}:${PORT_BDD}
-#     expose:
-#       - ${PORT_BDD}
+  mongodb-meteo:
+    image: mongo:latest
+    container_name: mongodb-meteo
+    volumes:
+      - mongo-data:/data/db          # <--- volume Docker nommé (pas de dossier local)
+    networks:
+      - meteo-network
+    ports:
+      - ${PORT_BDD}:${PORT_BDD}
+    expose:
+      - ${PORT_BDD}
 
-# networks:
-#   meteo-network:
-#     driver: bridge
+networks:
+  meteo-network:
+    driver: bridge
 
-# volumes:
-#   mongo-data:
+volumes:
+  mongo-data:
